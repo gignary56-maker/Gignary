@@ -1,0 +1,2428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Dashboard — Gignary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="view-app">
+  <div class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="#" onclick="setSubView('dashboard'); return false;">
+        <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#1F9D55" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#1F9D55" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#1F9D55"/></svg>
+        Gignary
+      </a>
+      <div class="topbar-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="11" cy="11" r="7" stroke="#6E8C7C" stroke-width="2"/><path d="M21 21l-4-4" stroke="#6E8C7C" stroke-width="2" stroke-linecap="round"/></svg>
+        <input type="text" id="searchInput" placeholder="Search gigs...">
+      </div>
+      <div class="topbar-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notifBtn" aria-label="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3a5 5 0 0 0-5 5v3.2c0 .5-.2 1-.5 1.4L5 14.5c-.6.7-.1 1.8.8 1.8h12.4c.9 0 1.4-1.1.8-1.8l-1.5-2c-.3-.4-.5-.9-.5-1.4V8a5 5 0 0 0-5-5z" stroke="#0B3D2E" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.5 19a2.5 2.5 0 0 0 5 0" stroke="#0B3D2E" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span class="notif-dot" id="notifDot" style="display:none;"></span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-head">Notifications</div>
+            <div class="notif-list" id="notifList">
+              <div class="notif-empty">No notifications yet.</div>
+            </div>
+          </div>
+        </div>
+        <div class="profile-wrap">
+          <button class="profile-btn" id="profileBtn">
+            <span class="profile-avatar" id="topbarAvatar">B</span>
+            <span id="topbarName">Buyer</span>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <button onclick="setSubView('profile'); closeDropdown();">👤 View profile</button>
+            <button onclick="openReportUserModal(); closeDropdown();">🚩 Report</button>
+            <button onclick="setSubView('orderstatus'); closeDropdown();">📦 Order status</button>
+            <button onclick="setSubView('settings'); closeDropdown();">⚙️ Settings</button>
+            <button id="adminMenuBtn" style="display:none;" onclick="setSubView('admin'); closeDropdown();">🛠️ Admin panel</button>
+            <hr>
+            <button class="logout-opt" onclick="logout();">↪ Log out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="app-main">
+
+    <!-- ---- DASHBOARD SUBVIEW ---- -->
+    <div class="sub-view active" id="sub-dashboard">
+      <div class="request-banner">
+        <div>
+          <b>Can't find what you need?</b>
+          <span>Post a request describing your project — add a reference photo or video if you have one.</span>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openRequestModal()">📮 Post a request</button>
+      </div>
+      <div class="feed-head">
+        <div>
+          <span class="kicker">Available gigs</span>
+          <h2 style="font-size:26px;">Pick a gig, tell us what you need</h2>
+        </div>
+        <div class="chips" id="categoryChips">
+          <button class="chip active" data-cat="all">All gigs</button>
+          <button class="chip" data-cat="Design">Design</button>
+          <button class="chip" data-cat="Writing">Writing</button>
+          <button class="chip" data-cat="Marketing">Marketing</button>
+          <button class="chip" data-cat="Development">Development</button>
+          <span class="chips-extra" id="chipsExtra">
+            <button class="chip" data-cat="Video Editor">Video Editor</button>
+            <button class="chip" data-cat="UI/UX Designer">UI/UX Designer</button>
+            <button class="chip" data-cat="Banner">Banner</button>
+            <button class="chip" data-cat="Thumbnail">Thumbnail</button>
+            <button class="chip" data-cat="Logo">Logo</button>
+          </span>
+          <button class="chip chip-see-more" id="seeMoreCatsBtn" onclick="toggleMoreCats()">See more</button>
+        </div>
+      </div>
+      <p id="searchResultsSummary" style="display:none; color:var(--sage); font-size:14px; margin:-6px 0 14px;"></p>
+      <div class="gig-grid" id="gigGrid"></div>
+    </div>
+
+    <!-- ---- PROFILE SUBVIEW ---- -->
+    <div class="sub-view" id="sub-profile">
+      <button class="btn btn-ghost btn-sm" style="margin-bottom:20px;" onclick="setSubView('dashboard')">← Back</button>
+      <span class="kicker">Your account</span>
+      <h2 style="font-size:26px; margin-bottom:22px;">Profile</h2>
+
+      <div class="profile-card">
+        <div class="avatar-upload-wrap">
+          <div class="profile-avatar-lg" id="profileAvatarLg">B</div>
+          <label class="avatar-edit-btn" for="avatarFileInput" title="Change photo">📷</label>
+          <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
+        </div>
+        <div class="field">
+          <label for="profileNameInput">Name</label>
+          <input type="text" id="profileNameInput" placeholder="Your name">
+        </div>
+        <span class="buyer-tag">Buyer</span>
+        <div>
+          <button class="btn btn-primary btn-sm" onclick="saveProfileName()">Save changes</button>
+        </div>
+      </div>
+
+      <div class="my-requests">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:16px;">
+          <h3 style="font-size:17px; margin:0;">Your requests</h3>
+          <button class="btn btn-primary btn-sm" onclick="openRequestModal()">📮 Post a request</button>
+        </div>
+        <div class="request-list" id="myRequestsList">
+          <p style="color:var(--sage); font-size:14px;">Loading...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- ORDER STATUS SUBVIEW ---- -->
+    <div class="sub-view" id="sub-orderstatus">
+      <button class="btn btn-ghost btn-sm" style="margin-bottom:20px;" onclick="setSubView('dashboard')">← Back</button>
+      <span class="kicker">Track your orders</span>
+      <h2 style="font-size:26px; margin-bottom:22px;">Order status</h2>
+      <div class="my-requests">
+        <div class="request-list" id="myOrdersList">
+          <p style="color:var(--sage); font-size:14px;">Loading...</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- SETTINGS SUBVIEW ---- -->
+    <div class="sub-view" id="sub-settings">
+      <button class="btn btn-ghost btn-sm" style="margin-bottom:20px;" onclick="setSubView('dashboard')">← Back</button>
+      <span class="kicker">Preferences</span>
+      <h2 style="font-size:26px; margin-bottom:22px;">Settings</h2>
+      <div class="settings-card">
+        <div class="settings-row">
+          <div><span>Notifications</span><small>Get notified about orders, messages and status changes</small></div>
+          <button class="toggle on" id="toggleNotif" onclick="toggleNotifications(this)"></button>
+        </div>
+        <div class="settings-row">
+          <div><span>WhatsApp updates</span><small>Receive updates on your WhatsApp number</small></div>
+          <button class="toggle on" id="toggleWa" onclick="this.classList.toggle('on')"></button>
+        </div>
+        <div class="settings-row">
+          <div><span>Email</span><small id="settingsEmail">you@example.com</small></div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Email editing coming soon.')">Edit</button>
+        </div>
+        <div class="settings-row">
+          <div><span>Password</span><small>Last changed: never</small></div>
+          <button class="btn btn-ghost btn-sm" onclick="showToast('Password change coming soon.')">Change</button>
+        </div>
+        <div class="settings-actions">
+          <button class="btn btn-danger" onclick="logout()">Log out</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ---- ADMIN PANEL SUBVIEW ---- -->
+    <div class="sub-view" id="sub-admin">
+      <button class="btn btn-ghost btn-sm" style="margin-bottom:20px;" onclick="setSubView('dashboard')">← Back</button>
+      <span class="kicker">Admin</span>
+      <h2 style="font-size:26px; margin-bottom:22px;">Admin panel</h2>
+
+      <div class="chips" style="margin-bottom:24px;">
+        <button class="chip active" id="adminChip-orders" onclick="setAdminTab('orders')">Orders</button>
+        <button class="chip" id="adminChip-requests" onclick="setAdminTab('requests')">Requests</button>
+        <button class="chip" id="adminChip-messages" onclick="setAdminTab('messages')">Messages</button>
+        <button class="chip" id="adminChip-gigs" onclick="setAdminTab('gigs')">Gigs</button>
+        <button class="chip" id="adminChip-sellers" onclick="setAdminTab('sellers')">Sellers</button>
+        <button class="chip" id="adminChip-buyers" onclick="setAdminTab('buyers')">Buyers</button>
+        <button class="chip" id="adminChip-feedback" onclick="setAdminTab('feedback')">Feedback</button>
+        <button class="chip" id="adminChip-reports" onclick="setAdminTab('reports')">Reports<span id="adminReportsBadge" style="display:none; margin-left:6px; background:#E44; color:#fff; border-radius:10px; padding:1px 7px; font-size:11px; font-weight:700;"></span></button>
+      </div>
+
+      <div class="admin-tab active" id="adminTab-orders">
+        <div id="adminOrdersList"><p style="color:var(--sage);">Loading...</p></div>
+      </div>
+      <div class="admin-tab" id="adminTab-requests">
+        <div id="adminRequestsList"><p style="color:var(--sage);">Loading...</p></div>
+      </div>
+      <div class="admin-tab" id="adminTab-messages">
+        <div class="admin-messages-layout">
+          <div class="admin-thread-list" id="adminThreadList"><p style="color:var(--sage); padding:14px;">Loading...</p></div>
+          <div class="admin-thread-panel" id="adminThreadPanel">
+            <p style="color:var(--sage);">Select a conversation on the left to view and reply.</p>
+          </div>
+        </div>
+      </div>
+      <div class="admin-tab" id="adminTab-gigs">
+        <button class="btn btn-primary btn-sm" style="margin-bottom:18px;" onclick="openAddGigModal()">+ Add new gig</button>
+        <div id="adminGigsList"><p style="color:var(--sage);">Loading...</p></div>
+      </div>
+      <div class="admin-tab" id="adminTab-sellers">
+        <button class="btn btn-primary btn-sm" style="margin-bottom:18px;" onclick="openAddGigModal()">+ Add new seller</button>
+        <div id="adminSellersList"><p style="color:var(--sage);">Loading...</p></div>
+      </div>
+      <div class="admin-tab" id="adminTab-buyers">
+        <div id="adminBuyersList"><p style="color:var(--sage);">Loading...</p></div>
+      </div>
+      <div class="admin-tab" id="adminTab-feedback">
+        <div id="adminFeedbackList"><p style="color:var(--sage);">Loading...</p></div>
+      </div>
+      <div class="admin-tab" id="adminTab-reports">
+        <div id="adminReportsList"><p style="color:var(--sage);">Loading...</p></div>
+      </div>
+    </div>
+
+    <!-- ---- SELLER PROFILE SUBVIEW (public) ---- -->
+    <div class="sub-view" id="sub-seller">
+      <button class="btn btn-ghost btn-sm" style="margin-bottom:20px;" onclick="setSubView('dashboard')">← Back to gigs</button>
+      <div class="seller-header">
+        <div class="profile-avatar-lg" id="sellerAvatarLg">S</div>
+        <div>
+          <h2 style="font-size:24px;" id="sellerNameHeading">Seller name</h2>
+          <span class="buyer-tag">Seller</span>
+          <span id="sellerRatingBadge" style="margin-left:8px; font-weight:700; color:var(--green);"></span>
+        </div>
+      </div>
+      <p class="seller-bio" id="sellerBioText">Trusted freelancer on Gignary.</p>
+      <div class="seller-tags-row" id="sellerTagsRow"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:28px 0 16px;">
+        <h3 style="font-size:17px; margin:0;">Gigs by this seller</h3>
+        <button class="btn btn-primary btn-sm" id="addGigToSellerBtn" style="display:none;" onclick="openAddGigModal(currentSellerViewData && currentSellerViewData.name)">+ New gig</button>
+      </div>
+      <div class="gig-grid" id="sellerGigGrid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ================= REQUEST A PROJECT MODAL ================= -->
+<div class="modal-backdrop" id="requestModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('requestModalBackdrop')">&times;</button>
+    <h3 style="font-size:20px; margin-bottom:4px;">Post a request</h3>
+    <p style="font-size:13.5px; color:var(--sage); margin:0 0 20px;">Tell us what you need — attach a reference photo or video if you have one.</p>
+
+    <form id="requestForm">
+      <label class="file-drop" id="reqFileDropLabel">
+        <input type="file" id="reqMedia" accept="image/*,video/*">
+        <p id="reqFileDropText">📎 Click to attach a photo or video (optional)</p>
+      </label>
+      <div class="file-preview" id="reqFilePreview"></div>
+
+      <div class="field"><label for="reqTitle">What do you need?</label><input type="text" id="reqTitle" required placeholder="e.g. Instagram reel for my bakery"></div>
+      <div class="field"><label for="reqCat">Category</label>
+        <select id="reqCat" required>
+          <option value="Design">Design</option>
+          <option value="Writing">Writing</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Development">Development</option>
+          <option value="Video Editor">Video Editor</option>
+          <option value="UI/UX Designer">UI/UX Designer</option>
+          <option value="Banner">Banner</option>
+          <option value="Thumbnail">Thumbnail</option>
+          <option value="Logo">Logo</option>
+        </select>
+      </div>
+      <div class="field"><label for="reqDesc">Describe your project</label><textarea id="reqDesc" required placeholder="Style, references, deadline — anything that helps..."></textarea></div>
+      <div class="field"><label for="reqBudget">Budget (PKR) — minimum 100</label><input type="number" id="reqBudget" min="100" step="1" required placeholder="e.g. 2000"></div>
+      <div class="field"><label for="reqContact">WhatsApp or email</label><input type="text" id="reqContact" required></div>
+      <button type="submit" class="btn btn-primary btn-block">Submit request</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= PHOTO CROP MODAL (shared) ================= -->
+<div class="modal-backdrop" id="cropModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="cancelCrop()">&times;</button>
+    <h3 style="font-size:19px; margin-bottom:4px;">Adjust photo</h3>
+    <p style="font-size:13px; color:var(--sage); margin:0 0 16px;">Drag to reposition, use the slider to zoom.</p>
+
+    <div class="crop-canvas-wrap">
+      <canvas id="cropCanvas" width="320" height="320"></canvas>
+    </div>
+    <input type="range" id="cropZoomSlider" min="0.1" max="3" step="0.01" value="1" style="width:100%; margin:16px 0;">
+
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost btn-block" onclick="cancelCrop()">Cancel</button>
+      <button class="btn btn-primary btn-block" onclick="saveCrop()">Use this photo</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= MEDIA LIGHTBOX ================= -->
+<div class="lightbox-backdrop" id="lightboxBackdrop" onclick="if(event.target===this) closeModal('lightboxBackdrop')">
+  <button class="lightbox-close" onclick="closeModal('lightboxBackdrop')">&times;</button>
+  <div class="lightbox-content" id="lightboxContent"></div>
+  <div class="lightbox-watermark">
+    <svg width="18" height="18" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#fff" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#fff" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#fff"/></svg>
+    Gignary
+  </div>
+</div>
+
+<!-- ================= ADD GIG MODAL (admin only) ================= -->
+<div class="modal-backdrop" id="addGigModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addGigModalBackdrop')">&times;</button>
+    <h3 style="font-size:20px; margin-bottom:4px;">Add new gig</h3>
+    <p style="font-size:13px; color:var(--sage); margin:0 0 18px;">Add this gig to an existing seller, or create a brand new one.</p>
+
+    <form id="addGigForm">
+      <div class="field">
+        <label for="addGigSellerSelect">Seller</label>
+        <select id="addGigSellerSelect" onchange="onAddGigSellerChange()">
+          <option value="__new__">➕ New seller</option>
+        </select>
+      </div>
+
+      <div id="newSellerFields">
+        <div class="field"><label for="addGigNewSellerName">Seller name</label><input type="text" id="addGigNewSellerName" placeholder="e.g. Studio Nine"></div>
+        <div class="field"><label for="addGigNewSellerBio">Seller bio</label><textarea id="addGigNewSellerBio" placeholder="Short bio about this seller's skills."></textarea></div>
+        <div class="field"><label for="addGigNewSellerSkills">Skills (comma separated)</label><input type="text" id="addGigNewSellerSkills" placeholder="e.g. Logo design, Branding"></div>
+        <div class="field"><label for="addGigNewSellerLanguage">Language</label><input type="text" id="addGigNewSellerLanguage" placeholder="e.g. English, Urdu"></div>
+        <div class="field"><label for="addGigDpMedia">Seller DP (optional)</label><input type="file" id="addGigDpMedia" accept="image/*"></div>
+      </div>
+
+      <hr style="border:none; border-top:1px solid var(--line); margin:18px 0;">
+
+      <div class="field"><label for="addGigTitle">Gig title</label><input type="text" id="addGigTitle" required></div>
+      <div class="field"><label for="addGigCat">Category</label>
+        <select id="addGigCat">
+          <option value="Design">Design</option>
+          <option value="Writing">Writing</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Development">Development</option>
+          <option value="Video Editor">Video Editor</option>
+          <option value="UI/UX Designer">UI/UX Designer</option>
+          <option value="Banner">Banner</option>
+          <option value="Thumbnail">Thumbnail</option>
+          <option value="Logo">Logo</option>
+        </select>
+      </div>
+      <div class="field"><label for="addGigPrice">Price</label><input type="text" id="addGigPrice" placeholder="e.g. PKR 2,000" required></div>
+      <div class="field"><label for="addGigDesc">Description</label><textarea id="addGigDesc" required></textarea></div>
+      <div class="field"><label for="addGigTags">Tags (comma separated, max 5)</label><input type="text" id="addGigTags" placeholder="e.g. logo, minimal, branding"></div>
+
+      <label class="file-drop" id="addGigMediaDropLabel">
+        <input type="file" id="addGigMedia" accept="image/*,video/*">
+        <p id="addGigMediaDropText">📎 Click to upload gig photo or video</p>
+      </label>
+      <div class="file-preview" id="addGigMediaPreview"></div>
+
+      <div class="field" id="addGigCoverField" style="display:none;">
+        <label for="addGigCoverMedia">Video cover photo</label>
+        <input type="file" id="addGigCoverMedia" accept="image/*">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block" style="margin-top:16px;">Add gig</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= EDIT GIG MODAL (admin only) ================= -->
+<div class="modal-backdrop" id="editGigModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('editGigModalBackdrop')">&times;</button>
+    <h3 style="font-size:20px; margin-bottom:4px;">Edit gig</h3>
+    <p style="font-size:13px; color:var(--sage); margin:0 0 18px;">Changes to seller bio, DP, skills, and language apply to all of this seller's gigs.</p>
+
+    <form id="editGigForm">
+      <div class="field"><label for="editGigTitle">Title</label><input type="text" id="editGigTitle" required></div>
+      <div class="field"><label for="editGigCat">Category</label>
+        <select id="editGigCat">
+          <option value="Design">Design</option>
+          <option value="Writing">Writing</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Development">Development</option>
+          <option value="Video Editor">Video Editor</option>
+          <option value="UI/UX Designer">UI/UX Designer</option>
+          <option value="Banner">Banner</option>
+          <option value="Thumbnail">Thumbnail</option>
+          <option value="Logo">Logo</option>
+        </select>
+      </div>
+      <div class="field"><label for="editGigPrice">Price</label><input type="text" id="editGigPrice"></div>
+      <div class="field"><label for="editGigDesc">Description</label><textarea id="editGigDesc"></textarea></div>
+      <div class="field"><label for="editGigTags">Tags (comma separated, max 5)</label><input type="text" id="editGigTags" placeholder="e.g. logo, minimal, branding"></div>
+
+      <hr style="border:none; border-top:1px solid var(--line); margin:18px 0;">
+      <p style="font-size:12.5px; color:var(--sage); margin:0 0 12px;">Seller info (<b id="editGigSellerNameLabel"></b>)</p>
+
+      <div class="field"><label for="editGigSellerBio">Seller bio</label><textarea id="editGigSellerBio"></textarea></div>
+      <div class="field"><label for="editGigSellerSkills">Skills (comma separated)</label><input type="text" id="editGigSellerSkills" placeholder="e.g. Logo design, Branding, Illustration"></div>
+      <div class="field"><label for="editGigSellerLanguage">Language</label><input type="text" id="editGigSellerLanguage" placeholder="e.g. English, Urdu"></div>
+      <div class="field">
+        <label for="editGigDpInput">Seller DP (optional — upload to replace)</label>
+        <input type="file" id="editGigDpInput" accept="image/*">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-block">Save changes</button>
+    </form>
+  </div>
+</div>
+
+
+<!-- ================= GIG DETAIL MODAL ================= -->
+<div class="modal-backdrop" id="gigDetailBackdrop">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeModal('gigDetailBackdrop')">&times;</button>
+    <div class="gig-media gig-clickable" style="border-radius:14px; margin-bottom:16px;" id="gigDetailMedia" onclick="openLightboxFromDetail()"></div>
+    <span class="gig-cat-badge" style="position:static; display:inline-block; margin-bottom:10px;" id="gigDetailCat">Design</span>
+    <h3 style="font-size:21px; margin-bottom:6px;" id="gigDetailTitle">Gig title</h3>
+    <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:14px;">
+      <span class="gig-price"><b id="gigDetailPrice">PKR 0</b></span>
+      <span class="gig-rating">★ <span id="gigDetailRating">New</span></span>
+    </div>
+    <p style="font-size:14px; color:var(--sage); line-height:1.6; margin-bottom:18px;" id="gigDetailDesc">Description...</p>
+
+    <div class="seller-row" onclick="viewSellerFromGigDetail()">
+      <span class="profile-avatar" id="gigDetailSellerAvatar">S</span>
+      <div>
+        <b id="gigDetailSellerName">Seller name</b>
+        <span class="buyer-tag" style="margin:2px 0 0;">Seller</span>
+      </div>
+      <span class="seller-row-arrow">View seller account →</span>
+    </div>
+
+    <div class="gig-detail-actions">
+      <button class="btn btn-ghost btn-sm" id="gigDetailChatBtn">💬 Chat with seller</button>
+      <button class="btn btn-primary btn-sm" id="gigDetailOrderBtn">Direct order</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= REPORT USER MODAL ================= -->
+<div class="modal-backdrop" id="reportUserModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('reportUserModalBackdrop')">&times;</button>
+    <div class="auth-head" style="margin-bottom:10px;">
+      <h2 style="font-size:20px;">Team Gignary</h2>
+      <p>Yeh report seedha hamari team ke pass jaati hai — hum jald review karenge.</p>
+    </div>
+    <form id="reportUserForm">
+      <div class="field">
+        <label for="reportUserName">Kis ko report karna hai</label>
+        <input type="text" id="reportUserName" required placeholder="Seller ya user ka naam likhein">
+      </div>
+      <div class="field">
+        <label for="reportUserReason">Kya hua?</label>
+        <select id="reportUserReason" required>
+          <option value="">Reason chunein</option>
+          <option value="Scam / Fraud">Scam / Fraud</option>
+          <option value="Kaam deliver nahi kiya">Kaam deliver nahi kiya</option>
+          <option value="Blackmail / Threat">Blackmail / Threat</option>
+          <option value="Bad behavior / Abuse">Bad behavior / Abuse</option>
+          <option value="Fake profile">Fake profile</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="reportUserDetails">Tafseel likhein</label>
+        <textarea id="reportUserDetails" placeholder="Jo bhi hua, yahan detail me batayein..." rows="4"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Report submit karein</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= ORDER MODAL ================= -->
+<div class="modal-backdrop" id="orderModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('orderModalBackdrop')">&times;</button>
+    <h3 style="font-size:20px; margin-bottom:4px;" id="orderModalTitle">Order this gig</h3>
+    <p style="font-size:13.5px; color:var(--sage); margin:0 0 20px;">Fill in a few details and we'll take it from here.</p>
+
+    <form id="orderForm">
+      <div class="form-grid">
+        <div class="field full"><label for="buyerName">Your name</label><input type="text" id="buyerName" required></div>
+        <div class="field"><label for="buyerContact">WhatsApp or email</label><input type="text" id="buyerContact" required></div>
+        <div class="field"><label for="buyerBudget">Budget (PKR) — minimum 100</label><input type="number" id="buyerBudget" min="100" step="1" placeholder="e.g. 3000" required></div>
+        <div class="field full"><label for="buyerDeadline">Needed by</label><input type="date" id="buyerDeadline"></div>
+        <div class="field full"><label for="buyerDetails">Project details</label><textarea id="buyerDetails" required placeholder="Anything the seller should know..."></textarea></div>
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Place order</button>
+    </form>
+
+    <div class="confirm-box" id="confirmBox">
+      <span class="confirm-id mono" id="confirmOrderId">GIG-00000</span>
+      <p id="confirmSummary" style="font-size:14px; color:var(--sage); line-height:1.5;"></p>
+      <div class="ring-tracker">
+        <svg viewBox="0 0 150 150" id="confirmRingSvg"></svg>
+        <div class="ring-stage-labels" id="confirmStageLabels"></div>
+      </div>
+
+      <div class="payment-box">
+        <h4>Complete your payment</h4>
+        <p class="payment-amount">Amount: <b id="confirmPaymentAmount">PKR 0</b></p>
+        <div class="payment-method-row">
+          <div class="payment-method-card">
+            <span class="payment-method-name">📱 JazzCash</span>
+            <span class="payment-method-detail">0335-1207795<br>Account title: Gignary</span>
+          </div>
+          <div class="payment-method-card">
+            <span class="payment-method-name">📱 Easypaisa</span>
+            <span class="payment-method-detail">0335-1207795<br>Account title: Gignary</span>
+          </div>
+        </div>
+        <p style="font-size:12.5px; color:var(--sage); margin:10px 0 14px;">Send the amount above, then submit your transaction ID below so we can confirm it.</p>
+
+        <div class="field">
+          <label for="paymentMethodSelect">Paid via</label>
+          <select id="paymentMethodSelect">
+            <option value="JazzCash">JazzCash</option>
+            <option value="Easypaisa">Easypaisa</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="transactionIdInput">Transaction ID</label>
+          <input type="text" id="transactionIdInput" placeholder="e.g. 123456789012">
+        </div>
+        <div class="field">
+          <label for="paymentReceiptInput">Payment receipt (screenshot)</label>
+          <input type="file" id="paymentReceiptInput" accept="image/*">
+          <p id="paymentReceiptPreviewNote" style="font-size:12px; color:var(--sage); margin:6px 0 0;"></p>
+        </div>
+        <button class="btn btn-primary btn-block" id="submitPaymentBtn" onclick="submitPaymentProof()">Submit payment</button>
+        <p class="payment-status-note" id="paymentStatusNote"></p>
+      </div>
+
+      <div class="order-instructions" id="orderInstructionsBox" style="background:#F7FAF8; border:1px solid var(--line-strong); border-radius:12px; padding:16px; margin-top:14px;">
+        <h4 style="font-size:15px; margin:0 0 10px;">What happens next</h4>
+        <ol style="margin:0 0 14px; padding-left:18px; font-size:13.5px; color:var(--ink); line-height:1.7;">
+          <li>Our team will verify your payment first.</li>
+          <li>Once confirmed, your order is sent to the seller through <b>Conversation</b> (chat) — that's where you'll talk to them.</li>
+          <li>You can track your order anytime from <b>Profile → Order status</b>.</li>
+          <li>If your order is running late, just message the seller directly in Conversation to check in.</li>
+        </ol>
+        <p style="font-size:13px; color:var(--sage); line-height:1.6; margin:0;">
+          🔒 <b>You're fully protected.</b> Gignary is a safe, secure platform. If a seller misbehaves, doesn't deliver your order, or tries to blackmail you, report it immediately — our team will look into it and <b>refund your payment</b> if the seller is at fault.
+        </p>
+        <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="reportOrderIssue()">🚩 Report a problem with this order</button>
+      </div>
+      <button class="btn btn-ghost btn-block" style="margin-top:14px;" onclick="closeModal('orderModalBackdrop')">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= CONVERSATION MODAL ================= -->
+<div class="modal-backdrop" id="chatModalBackdrop">
+  <div class="modal modal-wide">
+    <button class="modal-close" onclick="closeModal('chatModalBackdrop')">&times;</button>
+    <h3 style="font-size:19px; margin-bottom:4px;" id="chatModalTitle">Conversation with seller</h3>
+    <p style="font-size:13px; color:var(--sage); margin:0 0 16px;">Ask questions before you order, or follow up on progress.</p>
+    <div class="chat-thread" id="chatThread"></div>
+    <div class="chat-input-row">
+      <input type="file" id="chatPdfInput" accept="application/pdf" style="display:none;">
+      <button class="btn btn-ghost btn-sm" id="chatPdfBtn" type="button" title="Attach a PDF">📎 PDF</button>
+      <input type="text" id="chatInput" placeholder="Type a message...">
+      <button class="btn btn-primary btn-sm" id="chatSendBtn">Send</button>
+    </div>
+  </div>
+</div>
+
+<!-- ================= FEEDBACK MODAL ================= -->
+<div class="modal-backdrop" id="feedbackModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('feedbackModalBackdrop')">&times;</button>
+    <h3 style="font-size:19px; margin-bottom:4px;">Send feedback</h3>
+    <p style="font-size:13px; color:var(--sage); margin:0 0 16px;">Tell us what's working, what's not, or what you'd like to see.</p>
+    <div class="field">
+      <label for="feedbackText">Your feedback</label>
+      <textarea id="feedbackText" rows="5" placeholder="Type your feedback here..."></textarea>
+    </div>
+    <button class="btn btn-primary btn-block" id="feedbackSendBtn">Send feedback</button>
+  </div>
+</div>
+
+<button class="whatsapp-fab" id="feedbackFabBtn" aria-label="Send feedback" title="Send feedback" style="border:none; cursor:pointer;">
+  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+</button>
+
+<div class="toast" id="toast"></div>
+<div id="sharedGigMenu"></div>
+<script src="shared.js"></script>
+<script>
+/* ================= DATA ================= */
+const CAT_ICONS = {
+  Design: '<path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6L12 3z" stroke="currentColor" stroke-width="1.6" fill="none"/>',
+  Writing:'<path d="M4 20l1-4 11-11 3 3-11 11-4 1z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>',
+  Marketing:'<path d="M4 10v4h3l5 4V6L7 10H4z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/><path d="M17 8c1.3 1.1 1.3 6.9 0 8" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round"/>',
+  Development:'<path d="M9 8l-5 4 5 4M15 8l5 4-5 4" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+  'Video Editor':'<path d="M5 6h9v12H5z" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M14 10l5-3v10l-5-3" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>',
+  'UI/UX Designer':'<rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M4 9h16M9 9v11" stroke="currentColor" stroke-width="1.6"/>',
+  Banner:'<rect x="3" y="6" width="18" height="12" rx="1.5" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M7 15l3-3 2.5 2.5L17 10" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"/>',
+  Thumbnail:'<rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/><path d="M10 9l6 3.5-6 3.5V9z" stroke="currentColor" stroke-width="1.6" fill="none" stroke-linejoin="round"/>',
+  Logo:'<circle cx="12" cy="12" r="8" stroke="currentColor" stroke-width="1.6" fill="none"/><circle cx="12" cy="12" r="3" stroke="currentColor" stroke-width="1.6" fill="none"/>'
+};
+
+let seedPosts = [
+  { id:"g1", cat:"Design", title:"Logo & brand identity", desc:"Custom logo, colour palette, and a mini brand guide for your business.", price:"PKR 4,500", rating:"4.9", seller:"Studio Nine", media:null },
+  { id:"g2", cat:"Design", title:"Social media post pack", desc:"10 branded post templates for Instagram or Facebook, ready to schedule.", price:"PKR 3,000", rating:"4.8", seller:"Studio Nine", media:null },
+  { id:"g3", cat:"Writing", title:"Blog articles (SEO)", desc:"1,000-word SEO-friendly article, researched and written from scratch.", price:"PKR 2,000", rating:"5.0", seller:"Hamza Writes", media:null },
+  { id:"g4", cat:"Writing", title:"Website copywriting", desc:"Homepage and About page copy that actually sounds like your brand.", price:"PKR 5,500", rating:"4.9", seller:"Hamza Writes", media:null },
+  { id:"g5", cat:"Marketing", title:"Instagram growth plan", desc:"30-day content calendar with captions, hashtags, and posting times.", price:"PKR 6,000", rating:"4.7", seller:"GrowthLab", media:null },
+  { id:"g6", cat:"Development", title:"Landing page build", desc:"One responsive landing page, built and handed over ready to host.", price:"PKR 8,000", rating:"4.9", seller:"CodeCraft", media:null },
+  { id:"g7", cat:"Video", title:"Reels editing (x5)", desc:"Five short-form videos edited with captions, transitions, and music.", price:"PKR 4,500", rating:"4.9", seller:"CutRight", media:null }
+];
+let posts = [...seedPosts];
+
+const STAGES = ["Received","Reviewed","In progress","Delivered"];
+let currentUser = null; // { id, name, email }
+let currentGigForOrder = null;
+let currentOrderDbId = null;
+let currentGigForChat = null;
+const chatThreads = {}; // gigId -> [{from:'buyer'|'system', text}]
+
+function setSubView(name){
+  document.querySelectorAll('.sub-view').forEach(v => v.classList.remove('active'));
+  document.getElementById('sub-' + name).classList.add('active');
+  if(name === 'profile'){
+    document.getElementById('profileNameInput').value = currentUser.name;
+    loadMyRequests();
+  }
+  if(name === 'orderstatus'){
+    loadMyOrders();
+  }
+  if(name === 'admin'){
+    setAdminTab('orders');
+  }
+  document.querySelector('.app-main').scrollIntoView({behavior:'instant'});
+}
+
+function renderAvatars(){
+  const initial = currentUser.name.charAt(0).toUpperCase();
+  const html = currentUser.avatarUrl ? `<img src="${currentUser.avatarUrl}" alt="${initial}">` : initial;
+  document.getElementById('topbarAvatar').innerHTML = html;
+  document.getElementById('profileAvatarLg').innerHTML = html;
+}
+
+async function enterApp(){
+  document.getElementById('topbarName').textContent = currentUser.name;
+  renderAvatars();
+  document.getElementById('settingsEmail').textContent = currentUser.email;
+  document.getElementById('adminMenuBtn').style.display = ADMIN_EMAILS.includes(currentUser.email) ? 'flex' : 'none';
+  setSubView('dashboard');
+  await loadPostsFromDB();
+  renderFeed();
+  loadNotificationsFromDB();
+  if(ADMIN_EMAILS.includes(currentUser.email)) refreshAdminReportsBadge();
+
+  let justSignedUp = false;
+  try{ justSignedUp = localStorage.getItem('gignary_just_signed_up') === '1'; }catch(e){}
+  if(justSignedUp){
+    try{ localStorage.removeItem('gignary_just_signed_up'); }catch(e){}
+    showToast('Welcome to Gignary, ' + currentUser.name + '! 🎉');
+    addNotification('Welcome to Gignary, ' + currentUser.name + '! Browse gigs or post a request to get started.');
+  }
+}
+
+async function loadPostsFromDB(){
+  const { data, error } = await sbSelect('posts', 'select=*&order=created_at.desc');
+  if(error){ console.error('Could not load posts:', errMsg(error)); showToast('Could not load your gigs: ' + errMsg(error), true); posts = [...seedPosts]; return; }
+  const dbPosts = (data || []).map(row => ({
+    id: row.id, cat: row.category, title: row.title, desc: row.description,
+    price: row.price, rating: row.rating || 'New', seller: row.seller_name,
+    sellerBio: row.seller_bio,
+    sellerAvatarUrl: row.seller_avatar_url,
+    sellerSkills: row.seller_skills,
+    sellerLanguage: row.seller_language,
+    media: row.media_url, mediaType: row.media_type, mediaPoster: row.media_poster_url, tags: row.tags, dbRow: true
+  }));
+  posts = dbPosts.length ? dbPosts : [...seedPosts];
+}
+
+async function logout(){
+  sbSignOut();
+  clearSession();
+  currentUser = null;
+  closeDropdown();
+  location.href = 'index.html';
+}
+
+/* ================= PROFILE DROPDOWN ================= */
+const profileBtn = document.getElementById('profileBtn');
+const profileDropdown = document.getElementById('profileDropdown');
+profileBtn.addEventListener('click', e => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+document.addEventListener('click', () => profileDropdown.classList.remove('show'));
+function closeDropdown(){ profileDropdown.classList.remove('show'); }
+
+async function saveProfileName(){
+  const val = document.getElementById('profileNameInput').value.trim();
+  if(!val || !currentUser) return;
+  currentUser.name = val;
+  document.getElementById('topbarName').textContent = val;
+  renderAvatars();
+  const { error } = await sbUpdate('profiles', currentUser.id, { name: val });
+  if(error){ showToast('Could not save: ' + errMsg(error), true); return; }
+  showToast('Profile updated.');
+}
+
+/* ================= DP (avatar) UPLOAD ================= */
+document.getElementById('avatarFileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file || !currentUser) return;
+  openCropModal(file, async croppedFile => {
+    const safeName = 'dp.png';
+    const filePath = currentUser.id + '/avatar/' + Date.now() + '-' + safeName;
+
+    showToast('Uploading photo...');
+    const { error: uploadError } = await sbUpload(filePath, croppedFile);
+    if(uploadError){ showToast('Could not upload photo: ' + errMsg(uploadError), true); return; }
+
+    const url = sbPublicUrl(filePath);
+    currentUser.avatarUrl = url;
+    renderAvatars();
+
+    const { error } = await sbUpdate('profiles', currentUser.id, { avatar_url: url });
+    if(error){ showToast('Could not save photo: ' + errMsg(error), true); return; }
+    showToast('Profile photo updated.');
+  });
+  e.target.value = '';
+});
+
+/* ================= FEED RENDER ================= */
+const gigGrid = document.getElementById('gigGrid');
+let activeCat = 'all';
+let searchTerm = '';
+
+function mediaBlock(p){
+  if(p.media){
+    if(p.mediaType === 'video'){
+      const hasPoster = !!p.mediaPoster;
+      const posterImg = hasPoster ? `<img class="video-cover-img" src="${p.mediaPoster}" alt="${p.title}">` : '';
+      const wrapClass = 'video-hover-wrap' + (hasPoster ? ' has-poster' : '');
+      return `<div class="${wrapClass}"
+        onmouseover="this.classList.add('playing'); this.querySelector('video').play();"
+        onmouseout="this.classList.remove('playing'); const v=this.querySelector('video'); v.pause(); v.currentTime=0;">
+        ${posterImg}
+        <video src="${p.media}" muted loop playsinline></video>
+      </div>`;
+    }
+    return `<img src="${p.media}" alt="${p.title}">`;
+  }
+  return `<svg class="media-icon" width="46" height="46" viewBox="0 0 24 24">${CAT_ICONS[p.cat] || CAT_ICONS.Design}</svg>`;
+}
+
+function cardHTML(p){
+  return `
+    <div class="gig-card">
+      <div class="gig-media gig-clickable" data-id="${p.id}" onclick="openGigDetail('${p.id}')">
+        <span class="gig-cat-badge">${p.cat}</span>
+        <div class="card-menu-wrap" onclick="event.stopPropagation()">
+          <button class="card-menu-btn" onclick="toggleGigMenu(event, '${p.id}')">⋮</button>
+        </div>
+        ${mediaBlock(p)}
+      </div>
+      <div class="gig-body">
+        <div class="gig-title-row">
+          <h3 class="gig-clickable" onclick="openGigDetail('${p.id}')">${p.title}</h3>
+          <span class="gig-rating">★ ${p.rating}</span>
+        </div>
+        <p class="gig-desc gig-desc-clamp">${p.desc}</p>
+        <button class="show-more-btn" onclick="openGigDetail('${p.id}')">Show more</button>
+        <span class="gig-seller">by ${p.seller}</span>
+        <div class="gig-foot"><div class="gig-price"><b>${p.price}</b><span>starting price</span></div></div>
+      </div>
+      <div class="gig-actions">
+        <button class="btn btn-ghost btn-sm chat-btn" data-id="${p.id}">💬 Message seller</button>
+        <button class="btn btn-primary btn-sm order-btn" data-id="${p.id}">Place order</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderFeed(){
+  let list = activeCat === 'all' ? posts : posts.filter(p => p.cat === activeCat);
+  const summaryEl = document.getElementById('searchResultsSummary');
+  if(searchTerm.trim()){
+    const t = searchTerm.toLowerCase();
+    list = list.filter(p =>
+      p.title.toLowerCase().includes(t) ||
+      p.desc.toLowerCase().includes(t) ||
+      p.cat.toLowerCase().includes(t) ||
+      (p.seller && p.seller.toLowerCase().includes(t)) ||
+      (p.tags && p.tags.toLowerCase().includes(t)) ||
+      (p.sellerSkills && p.sellerSkills.toLowerCase().includes(t)) ||
+      (p.sellerBio && p.sellerBio.toLowerCase().includes(t))
+    );
+
+    if(list.length){
+      summaryEl.textContent = `${list.length} result${list.length === 1 ? '' : 's'} found for "${searchTerm.trim()}"`;
+      summaryEl.style.display = 'block';
+    } else {
+      summaryEl.style.display = 'none';
+    }
+  } else {
+    summaryEl.style.display = 'none';
+  }
+  gigGrid.innerHTML = list.length ? list.map(cardHTML).join('') : '<p style="color:var(--sage);">No gigs match your search.</p>';
+}
+
+document.getElementById('categoryChips').addEventListener('click', e => {
+  const btn = e.target.closest('.chip');
+  if(!btn || btn.id === 'seeMoreCatsBtn') return;
+  document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  activeCat = btn.dataset.cat;
+  renderFeed();
+});
+
+function toggleMoreCats(){
+  const extra = document.getElementById('chipsExtra');
+  const btn = document.getElementById('seeMoreCatsBtn');
+  const showing = extra.classList.toggle('show');
+  btn.textContent = showing ? 'See less' : 'See more';
+}
+
+document.getElementById('searchInput').addEventListener('keydown', e => {
+  if(e.key === 'Enter'){
+    e.preventDefault();
+    searchTerm = e.target.value;
+    renderFeed();
+  }
+});
+document.getElementById('searchInput').addEventListener('input', e => {
+  if(!e.target.value.trim() && searchTerm){
+    searchTerm = '';
+    renderFeed();
+  }
+});
+
+/* ================= GIG DETAIL MODAL ================= */
+let currentGigDetail = null;
+
+let editingRequestId = null;
+
+function openRequestModal(existingReq){
+  editingRequestId = existingReq ? existingReq.id : null;
+  const modalTitle = document.querySelector('#requestModalBackdrop h3');
+  const submitBtn = document.querySelector('#requestForm button[type=submit]');
+
+  if(existingReq){
+    modalTitle.textContent = 'Edit request';
+    submitBtn.textContent = 'Save changes';
+    document.getElementById('reqTitle').value = existingReq.title || '';
+    document.getElementById('reqCat').value = existingReq.category || 'Design';
+    document.getElementById('reqDesc').value = existingReq.description || '';
+    document.getElementById('reqBudget').value = existingReq.budget || '';
+    document.getElementById('reqContact').value = existingReq.buyer_contact || (currentUser ? currentUser.email : '');
+  } else {
+    modalTitle.textContent = 'Post a request';
+    submitBtn.textContent = 'Submit request';
+    document.getElementById('requestForm').reset();
+    document.getElementById('reqFilePreview').classList.remove('show');
+    document.getElementById('reqFileDropText').textContent = '📎 Click to attach a photo or video (optional)';
+    reqPendingFile = null;
+    if(currentUser) document.getElementById('reqContact').value = currentUser.email;
+  }
+  document.getElementById('requestModalBackdrop').classList.add('show');
+}
+
+let reqPendingFile = null;
+document.getElementById('reqMedia').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  reqPendingFile = file;
+  const url = URL.createObjectURL(file);
+  const isVideo = file.type.startsWith('video');
+  const preview = document.getElementById('reqFilePreview');
+  preview.innerHTML = isVideo ? `<video src="${url}" controls muted></video>` : `<img src="${url}">`;
+  preview.classList.add('show');
+  document.getElementById('reqFileDropText').textContent = '✓ ' + file.name;
+});
+
+document.getElementById('requestForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const budget = parseInt(document.getElementById('reqBudget').value, 10);
+  if(!budget || budget < 100){
+    showToast('Minimum request budget is PKR 100.', true);
+    return;
+  }
+
+  const btn = e.target.querySelector('button[type=submit]');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = editingRequestId ? 'Saving...' : 'Submitting...';
+
+  let mediaUrl = null, mediaType = null;
+  if(reqPendingFile){
+    mediaType = reqPendingFile.type.startsWith('video') ? 'video' : 'image';
+    const safeName = reqPendingFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const filePath = currentUser.id + '/requests/' + Date.now() + '-' + safeName;
+    const { error: uploadError } = await sbUpload(filePath, reqPendingFile);
+    if(uploadError){
+      showToast('Could not upload media: ' + errMsg(uploadError), true);
+      btn.disabled = false; btn.textContent = originalLabel;
+      return;
+    }
+    mediaUrl = sbPublicUrl(filePath);
+  }
+
+  const title = document.getElementById('reqTitle').value.trim();
+  const category = document.getElementById('reqCat').value;
+  const description = document.getElementById('reqDesc').value.trim();
+  const contact = document.getElementById('reqContact').value.trim();
+
+  let error;
+  if(editingRequestId){
+    const patch = { title, description, category, budget: String(budget), buyer_contact: contact };
+    if(mediaUrl){ patch.media_url = mediaUrl; patch.media_type = mediaType; }
+    ({ error } = await sbUpdate('requests', editingRequestId, patch));
+  } else {
+    ({ error } = await sbInsert('requests', {
+      buyer_id: currentUser.id,
+      buyer_name: currentUser.name,
+      buyer_contact: contact,
+      title, description, category,
+      budget: String(budget),
+      media_url: mediaUrl, media_type: mediaType
+    }));
+  }
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error){ showToast('Could not save request: ' + errMsg(error), true); return; }
+
+  const wasEditing = !!editingRequestId;
+  closeModal('requestModalBackdrop');
+  e.target.reset();
+  document.getElementById('reqFilePreview').classList.remove('show');
+  document.getElementById('reqFileDropText').textContent = '📎 Click to attach a photo or video (optional)';
+  reqPendingFile = null;
+  editingRequestId = null;
+
+  if(wasEditing){
+    showToast('Request updated.');
+    loadMyRequests();
+  } else {
+    showToast('Request submitted! Our team will review it and reach out shortly.');
+    addNotification(`Your request "${title}" was submitted.`);
+  }
+});
+
+/* ================= YOUR REQUESTS (with hover edit menu) ================= */
+let myRequestsCache = [];
+
+async function loadMyOrders(){
+  const list = document.getElementById('myOrdersList');
+  list.innerHTML = '<p style="color:var(--sage); font-size:14px;">Loading...</p>';
+  const { data, error } = await sbSelect('orders', 'buyer_id=eq.' + currentUser.id + '&select=*&order=created_at.desc');
+  if(error){
+    list.innerHTML = '<p style="color:var(--sage); font-size:14px;">Could not load your orders.</p>';
+    return;
+  }
+  const myOrders = data || [];
+  if(myOrders.length === 0){
+    list.innerHTML = '<p style="color:var(--sage); font-size:14px;">You haven\'t placed any orders yet.</p>';
+    return;
+  }
+  list.innerHTML = myOrders.map(o => {
+    const stage = o.stage_index || 0;
+    const stepsHtml = STAGES.map((s, i) => {
+      const doneClass = i <= stage ? 'done' : '';
+      const lineHtml = i < STAGES.length - 1 ? `<span class="order-stage-line ${i < stage ? 'done' : ''}"></span>` : '';
+      return `<span class="order-stage-step ${doneClass}">${s}</span>${lineHtml}`;
+    }).join('');
+    return `
+    <div class="request-card">
+      <h4>${o.gig_title || 'Custom project'}</h4>
+      <div class="req-meta">Order: ${o.order_code} · PKR ${o.budget}</div>
+      <div class="order-stage-track">${stepsHtml}</div>
+    </div>
+  `;
+  }).join('');
+}
+
+async function loadMyRequests(){
+  const list = document.getElementById('myRequestsList');
+  list.innerHTML = '<p style="color:var(--sage); font-size:14px;">Loading...</p>';
+  const { data, error } = await sbSelect('requests', 'buyer_id=eq.' + currentUser.id + '&select=*&order=created_at.desc');
+  if(error){
+    list.innerHTML = '<p style="color:var(--sage); font-size:14px;">Could not load your requests.</p>';
+    return;
+  }
+  myRequestsCache = data || [];
+  if(myRequestsCache.length === 0){
+    list.innerHTML = '<p style="color:var(--sage); font-size:14px;">You haven\'t posted any requests yet.</p>';
+    return;
+  }
+  list.innerHTML = myRequestsCache.map(r => `
+    <div class="request-card">
+      <div class="req-top">
+        <div>
+          <h4>${r.title}</h4>
+          <p>${r.description || ''}</p>
+          <div class="req-meta">${r.category} · PKR ${r.budget}</div>
+        </div>
+        <div class="req-menu-wrap" data-id="${r.id}">
+          <button class="req-menu-btn" onclick="toggleReqMenu(event, '${r.id}')">⋮</button>
+          <div class="req-dropdown" id="reqDropdown-${r.id}">
+            <button onclick="editMyRequest('${r.id}')">✏️ Edit</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleReqMenu(e, id){
+  e.stopPropagation();
+  document.querySelectorAll('.req-dropdown.show').forEach(d => { if(d.id !== 'reqDropdown-'+id) d.classList.remove('show'); });
+  document.querySelectorAll('.req-menu-wrap.show').forEach(w => { if(w.dataset.id !== id) w.classList.remove('show'); });
+  document.getElementById('reqDropdown-' + id).classList.toggle('show');
+  e.currentTarget.parentElement.classList.toggle('show');
+}
+document.addEventListener('click', () => {
+  document.querySelectorAll('.req-dropdown.show').forEach(d => d.classList.remove('show'));
+  document.querySelectorAll('.req-menu-wrap.show').forEach(w => w.classList.remove('show'));
+});
+
+function editMyRequest(id){
+  const req = myRequestsCache.find(r => r.id === id);
+  if(!req) return;
+  openRequestModal(req);
+}
+
+/* ================= ADMIN PANEL ================= */
+let currentAdminThreadPostId = null;
+let currentAdminThreadBuyerId = null;
+let currentAdminThreadSellerName = 'Seller';
+
+function setAdminTab(tab){
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#sub-admin .chip').forEach(c => c.classList.remove('active'));
+  document.getElementById('adminTab-' + tab).classList.add('active');
+  document.getElementById('adminChip-' + tab).classList.add('active');
+  if(tab !== 'messages'){ clearInterval(adminChatPollInterval); }
+  if(tab === 'orders') loadAdminOrders();
+  if(tab === 'requests') loadAdminRequests();
+  if(tab === 'messages') loadAdminMessages();
+  if(tab === 'gigs') loadAdminGigs();
+  if(tab === 'sellers') loadAdminSellers();
+  if(tab === 'buyers') loadAdminBuyers();
+  if(tab === 'feedback') loadAdminFeedback();
+  if(tab === 'reports') loadAdminReports();
+}
+
+async function loadAdminFeedback(){
+  const listEl = document.getElementById('adminFeedbackList');
+  const { data, error } = await sbSelect('feedback', 'select=*&order=created_at.desc');
+  if(error){ listEl.innerHTML = `<p style="color:var(--sage);">Could not load feedback: ${errMsg(error)}</p>`; return; }
+  if(!data || !data.length){ listEl.innerHTML = `<p style="color:var(--sage);">No feedback yet.</p>`; return; }
+  listEl.innerHTML = data.map(f => `
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center;">
+        <b>${f.user_name || 'User'}</b>
+        <span style="font-size:12px; color:var(--sage);">${f.created_at ? new Date(f.created_at).toLocaleString() : ''}</span>
+      </div>
+      <p style="font-size:13px; color:var(--sage); margin:2px 0 8px;">${f.user_email || ''}</p>
+      <p style="white-space:pre-wrap;">${f.text}</p>
+    </div>
+  `).join('');
+}
+
+function loadAdminGigs(){
+  const el = document.getElementById('adminGigsList');
+  if(!posts || posts.length === 0){ el.innerHTML = '<p style="color:var(--sage);">No gigs yet.</p>'; return; }
+  const bySeller = {};
+  posts.forEach(p => { (bySeller[p.seller] = bySeller[p.seller] || []).push(p); });
+  el.innerHTML = Object.keys(bySeller).map(sellerName => `
+    <div class="admin-card">
+      <h4>${sellerName}</h4>
+      <p style="margin-bottom:10px;">${bySeller[sellerName].length} gig(s)</p>
+      <div class="gig-grid">${bySeller[sellerName].map(cardHTML).join('')}</div>
+    </div>
+  `).join('');
+}
+
+let adminSellersCache = {};
+
+function loadAdminSellers(){
+  const el = document.getElementById('adminSellersList');
+  if(!posts || posts.length === 0){ el.innerHTML = '<p style="color:var(--sage);">No sellers yet.</p>'; return; }
+
+  const bySeller = {};
+  posts.forEach(p => {
+    if(!bySeller[p.seller]) bySeller[p.seller] = { count: 0, bio: p.sellerBio, skills: p.sellerSkills, language: p.sellerLanguage, avatarUrl: p.sellerAvatarUrl };
+    bySeller[p.seller].count++;
+  });
+  adminSellersCache = bySeller;
+
+  el.innerHTML = Object.keys(bySeller).sort().map(sellerName => {
+    const s = bySeller[sellerName];
+    const avatarHtml = s.avatarUrl
+      ? `<img src="${s.avatarUrl}" alt="${sellerName}" style="width:48px; height:48px; border-radius:50%; object-fit:cover;">`
+      : `<div class="profile-avatar-lg" style="width:48px; height:48px; font-size:18px; margin:0;">${sellerName.charAt(0).toUpperCase()}</div>`;
+    return `
+    <div class="admin-card">
+      <div style="display:flex; gap:14px; align-items:center;">
+        ${avatarHtml}
+        <div style="flex:1;">
+          <h4 style="margin-bottom:2px;">${sellerName}</h4>
+          <span style="font-size:12.5px; color:var(--sage);">${s.count} gig(s)</span>
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="viewAdminSellerProfile('${sellerName.replace(/'/g,"\\'")}')">View profile →</button>
+      </div>
+      ${s.bio ? `<p style="margin-top:10px;">${s.bio}</p>` : ''}
+      <div class="admin-meta" style="margin-top:8px;">
+        ${s.skills ? `<span><b>Skills:</b> ${s.skills}</span>` : ''}
+        ${s.language ? `<span><b>Language:</b> ${s.language}</span>` : ''}
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+
+function viewAdminSellerProfile(sellerName){
+  const s = adminSellersCache[sellerName];
+  if(!s) return;
+  openSellerProfile(sellerName, s.bio, s.avatarUrl, s.skills, s.language);
+}
+
+async function loadAdminBuyers(){
+  const el = document.getElementById('adminBuyersList');
+  const [ordersRes, requestsRes] = await Promise.all([
+    sbSelect('orders', 'select=*&order=created_at.desc'),
+    sbSelect('requests', 'select=*&order=created_at.desc')
+  ]);
+  if(ordersRes.error && requestsRes.error){
+    el.innerHTML = '<p style="color:var(--sage);">Could not load buyers.</p>';
+    return;
+  }
+  const orders = ordersRes.data || [];
+  const requests = requestsRes.data || [];
+
+  const byBuyer = {};
+  orders.forEach(o => {
+    const key = o.buyer_id || o.buyer_contact;
+    if(!byBuyer[key]) byBuyer[key] = { name: o.buyer_name, contact: o.buyer_contact, orders: [], requests: [] };
+    byBuyer[key].orders.push(o);
+  });
+  requests.forEach(r => {
+    const key = r.buyer_id || r.buyer_contact;
+    if(!byBuyer[key]) byBuyer[key] = { name: r.buyer_name, contact: r.buyer_contact, orders: [], requests: [] };
+    byBuyer[key].requests.push(r);
+  });
+
+  const buyerKeys = Object.keys(byBuyer);
+  if(buyerKeys.length === 0){ el.innerHTML = '<p style="color:var(--sage);">No buyers yet.</p>'; return; }
+
+  el.innerHTML = `<p style="color:var(--sage); font-size:13.5px; margin-bottom:16px;"><b>${buyerKeys.length}</b> buyer(s) total</p>` +
+    buyerKeys.map(key => {
+      const b = byBuyer[key];
+      return `
+      <div class="admin-card">
+        <h4>${b.name}</h4>
+        <div class="admin-meta" style="margin-bottom:10px;">
+          <span><b>Contact:</b> ${b.contact}</span>
+          <span><b>Orders:</b> ${b.orders.length}</span>
+          <span><b>Requests:</b> ${b.requests.length}</span>
+        </div>
+        ${b.orders.length ? `<p style="font-size:12.5px; color:var(--sage); margin:0 0 4px;"><b>Ordered:</b> ${b.orders.map(o => o.gig_title || 'Custom project').join(', ')}</p>` : ''}
+        ${b.requests.length ? `<p style="font-size:12.5px; color:var(--sage); margin:0;"><b>Requested:</b> ${b.requests.map(r => r.title).join(', ')}</p>` : ''}
+      </div>
+    `;
+    }).join('');
+}
+
+async function loadAdminOrders(){
+  const el = document.getElementById('adminOrdersList');
+  const { data, error } = await sbSelect('orders', 'select=*&order=created_at.desc');
+  if(error){ el.innerHTML = '<p style="color:var(--sage);">Could not load orders: ' + errMsg(error) + '</p>'; return; }
+  if(!data || data.length === 0){ el.innerHTML = '<p style="color:var(--sage);">No orders yet.</p>'; return; }
+
+  const priority = { pending: 0, submitted: 1, confirmed: 2, cancelled: 3 };
+  const sorted = [...data].sort((a, b) => {
+    const pa = priority[a.payment_status || 'pending'];
+    const pb = priority[b.payment_status || 'pending'];
+    return pa - pb;
+  });
+
+  el.innerHTML = sorted.map(o => {
+    const payStatus = o.payment_status || 'pending';
+    const payBadgeColor = payStatus === 'confirmed' ? 'var(--green-dark)' : (payStatus === 'submitted' ? '#B8860B' : (payStatus === 'cancelled' ? 'var(--sage)' : 'var(--danger)'));
+    const highlightClass = payStatus === 'pending' ? ' admin-card-pending' : (payStatus === 'cancelled' ? ' admin-card-cancelled' : '');
+    return `
+    <div class="admin-card${highlightClass}">
+      <div class="admin-card-top">
+        <div>
+          <h4>${o.gig_title || 'Custom project'}</h4>
+          <div class="admin-meta">
+            <span><b>Order:</b> ${o.order_code}</span>
+            <span><b>Buyer:</b> ${o.buyer_name}</span>
+            <span><b>Contact:</b> ${o.buyer_contact}</span>
+            <span><b>Budget:</b> PKR ${o.budget}</span>
+            ${o.deadline ? `<span><b>Deadline:</b> ${o.deadline}</span>` : ''}
+          </div>
+        </div>
+      </div>
+      ${o.details ? `<p>${o.details}</p>` : ''}
+      <div class="admin-meta" style="margin-top:10px;">
+        <span style="color:${payBadgeColor}; font-weight:700;">💳 Payment: ${payStatus}</span>
+        ${o.payment_method ? `<span><b>Method:</b> ${o.payment_method}</span>` : ''}
+        ${o.transaction_id ? `<span><b>Txn ID:</b> ${o.transaction_id}</span>` : ''}
+      </div>
+      ${o.payment_receipt_url ? `<a href="${o.payment_receipt_url}" target="_blank" rel="noopener"><img src="${o.payment_receipt_url}" alt="Payment receipt" style="max-width:160px; border-radius:8px; margin-top:8px; display:block; border:1px solid var(--line-strong);"></a>` : ''}
+      <div class="admin-order-actions">
+        ${payStatus !== 'confirmed' && payStatus !== 'cancelled' ? `<button class="btn btn-primary btn-sm" onclick="confirmPayment('${o.id}')">✓ Confirm payment</button>` : ''}
+        ${payStatus !== 'cancelled' && payStatus !== 'confirmed' ? `<button class="btn btn-danger btn-sm" onclick="cancelOrder('${o.id}')">✕ Cancel order</button>` : ''}
+        <button class="btn btn-danger btn-sm" onclick="deleteOrder('${o.id}')">🗑️ Delete order</button>
+      </div>
+      <div class="admin-stage-btns">
+        ${STAGES.map((s, i) => `<button class="btn btn-ghost ${o.stage_index === i ? 'current' : ''}" onclick="setOrderStage('${o.id}', ${i})">${s}</button>`).join('')}
+      </div>
+    </div>
+  `;
+  }).join('');
+}
+
+async function confirmPayment(orderId){
+  const { error } = await sbUpdate('orders', orderId, { payment_status: 'confirmed' });
+  if(error){ showToast('Could not confirm payment: ' + errMsg(error), true); return; }
+  showToast('Payment marked as confirmed.');
+  loadAdminOrders();
+}
+
+async function cancelOrder(orderId){
+  if(!confirm('Cancel this order? The buyer did not complete payment.')) return;
+  const { error } = await sbUpdate('orders', orderId, { payment_status: 'cancelled' });
+  if(error){ showToast('Could not cancel order: ' + errMsg(error), true); return; }
+  showToast('Order cancelled.');
+  loadAdminOrders();
+}
+
+async function deleteOrder(orderId){
+  if(!confirm('Delete this order permanently? This cannot be undone.')) return;
+  const { error } = await sbDelete('orders', orderId);
+  if(error){ showToast('Could not delete order: ' + errMsg(error), true); return; }
+  showToast('Order deleted.');
+  loadAdminOrders();
+}
+
+async function setOrderStage(orderId, stageIndex){
+  const { error } = await sbUpdate('orders', orderId, { stage_index: stageIndex });
+  if(error){ showToast('Could not update order: ' + errMsg(error), true); return; }
+  showToast('Order status updated.');
+  loadAdminOrders();
+}
+
+async function loadAdminRequests(){
+  const el = document.getElementById('adminRequestsList');
+  const { data, error } = await sbSelect('requests', 'select=*&order=created_at.desc');
+  if(error){ el.innerHTML = '<p style="color:var(--sage);">Could not load requests: ' + errMsg(error) + '</p>'; return; }
+  if(!data || data.length === 0){ el.innerHTML = '<p style="color:var(--sage);">No requests yet.</p>'; return; }
+  el.innerHTML = data.map(r => `
+    <div class="admin-card">
+      <h4>${r.title}</h4>
+      <p>${r.description || ''}</p>
+      <div class="admin-meta">
+        <span><b>Buyer:</b> ${r.buyer_name}</span>
+        <span><b>Contact:</b> ${r.buyer_contact}</span>
+        <span><b>Category:</b> ${r.category}</span>
+        <span><b>Budget:</b> PKR ${r.budget}</span>
+        ${r.media_url ? `<span><a href="${r.media_url}" target="_blank" rel="noopener">View attached media →</a></span>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+async function loadAdminMessages(){
+  const listEl = document.getElementById('adminThreadList');
+  const { data, error } = await sbSelect('messages', 'select=*&order=created_at.desc');
+  if(error){ listEl.innerHTML = '<p style="color:var(--sage); padding:14px;">Could not load messages: ' + errMsg(error) + '</p>'; return; }
+  if(!data || data.length === 0){ listEl.innerHTML = '<p style="color:var(--sage); padding:14px;">No conversations yet.</p>'; return; }
+
+  const byThread = {};
+  data.forEach(m => {
+    const buyerId = m.buyer_id || m.sender_id; // fallback for any old rows saved before buyer_id existed
+    const key = m.post_id + '|' + buyerId;
+    if(!byThread[key]) byThread[key] = { postId: m.post_id, buyerId, msgs: [] };
+    byThread[key].msgs.push(m);
+  });
+
+  listEl.innerHTML = Object.values(byThread).map(t => {
+    const latest = t.msgs[0];
+    const post = posts.find(p => p.id === t.postId);
+    const title = post ? post.title : 'Gig conversation';
+    const buyerMsg = t.msgs.find(m => m.sender_id === t.buyerId);
+    const buyerName = (buyerMsg && buyerMsg.sender_name) || 'Buyer';
+    return `<div class="admin-thread-item" data-key="${t.postId}|${t.buyerId}" onclick="loadAdminThread('${t.postId}', '${t.buyerId}', '${title.replace(/'/g,"\\'")}', '${buyerName.replace(/'/g,"\\'")}')">
+      <b>${buyerName} · ${title}</b>
+      <span>${latest.sender_name || 'Buyer'}: ${(latest.text || '').slice(0, 40)}</span>
+    </div>`;
+  }).join('');
+}
+
+let adminChatPollInterval = null;
+
+async function loadAdminThread(postId, buyerId, title, buyerName){
+  currentAdminThreadPostId = postId;
+  currentAdminThreadBuyerId = buyerId;
+  const post = posts.find(p => p.id === postId);
+  currentAdminThreadSellerName = post ? post.seller : 'Seller';
+  document.querySelectorAll('.admin-thread-item').forEach(i => i.classList.toggle('active', i.dataset.key === (postId + '|' + buyerId)));
+
+  const panel = document.getElementById('adminThreadPanel');
+  panel.innerHTML = `
+    <h3 style="font-size:16px; margin-bottom:2px;">${buyerName} · ${title}</h3>
+    <p style="font-size:12.5px; color:var(--sage); margin:0 0 14px;">Replying as <b>${currentAdminThreadSellerName}</b></p>
+    <div class="chat-thread" id="adminChatThread" style="max-height:340px;"></div>
+    <div class="chat-input-row">
+      <input type="file" id="adminChatPdfInput" accept="application/pdf" style="display:none;">
+      <button class="btn btn-ghost btn-sm" id="adminChatPdfBtn" type="button" title="Attach a PDF">📎 PDF</button>
+      <input type="text" id="adminChatInput" placeholder="Type a reply...">
+      <button class="btn btn-primary btn-sm" id="adminChatSendBtn">Send</button>
+    </div>
+  `;
+
+  await refreshAdminThreadMessages(postId, buyerId);
+  clearInterval(adminChatPollInterval);
+  adminChatPollInterval = setInterval(() => refreshAdminThreadMessages(postId, buyerId), 4000);
+
+  document.getElementById('adminChatSendBtn').addEventListener('click', sendAdminReply);
+  document.getElementById('adminChatInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); sendAdminReply(); } });
+  document.getElementById('adminChatPdfBtn').addEventListener('click', () => document.getElementById('adminChatPdfInput').click());
+  document.getElementById('adminChatPdfInput').addEventListener('change', sendAdminReplyPdf);
+}
+
+async function refreshAdminThreadMessages(postId, buyerId){
+  const threadEl = document.getElementById('adminChatThread');
+  if(!threadEl) { clearInterval(adminChatPollInterval); return; }
+  const { data, error } = await sbSelect('messages', 'post_id=eq.' + postId + '&buyer_id=eq.' + buyerId + '&select=*&order=created_at.asc');
+  if(error){ threadEl.innerHTML = '<p style="color:var(--sage);">Could not load thread.</p>'; return; }
+  const wasNearBottom = threadEl.scrollTop + threadEl.clientHeight >= threadEl.scrollHeight - 20;
+  threadEl.innerHTML = (data || []).map(m => {
+    const isMe = m.sender_id === currentUser.id;
+    return `<div class="chat-msg ${isMe ? 'buyer' : 'other'}">${isMe ? '' : '<b>' + (m.sender_name || 'Buyer') + ':</b> '}${m.text}</div>`;
+  }).join('');
+  if(wasNearBottom) threadEl.scrollTop = threadEl.scrollHeight;
+}
+
+async function sendAdminReply(){
+  const input = document.getElementById('adminChatInput');
+  const text = input.value.trim();
+  if(!text || !currentAdminThreadPostId) return;
+  input.value = '';
+
+  const { error } = await sbInsert('messages', {
+    post_id: currentAdminThreadPostId,
+    buyer_id: currentAdminThreadBuyerId,
+    sender_id: currentUser.id,
+    sender_name: currentAdminThreadSellerName,
+    text
+  });
+  if(error){ showToast('Could not send reply: ' + errMsg(error), true); return; }
+
+  const threadEl = document.getElementById('adminChatThread');
+  threadEl.innerHTML += `<div class="chat-msg buyer">${text}</div>`;
+  threadEl.scrollTop = threadEl.scrollHeight;
+}
+
+async function sendAdminReplyPdf(e){
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file || !currentAdminThreadPostId) return;
+  if(file.type !== 'application/pdf'){ showToast('Please choose a PDF file.', true); return; }
+
+  const btn = document.getElementById('adminChatPdfBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Uploading...';
+
+  const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+  const filePath = currentUser.id + '/chat/' + Date.now() + '-' + safeName;
+  const { error: uploadError } = await sbUpload(filePath, file);
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(uploadError){ showToast('Could not upload PDF: ' + errMsg(uploadError), true); return; }
+
+  const url = sbPublicUrl(filePath);
+  const text = `📎 <a href="${url}" target="_blank" rel="noopener">${safeName}</a>`;
+
+  const { error } = await sbInsert('messages', {
+    post_id: currentAdminThreadPostId,
+    buyer_id: currentAdminThreadBuyerId,
+    sender_id: currentUser.id,
+    sender_name: currentAdminThreadSellerName,
+    text
+  });
+  if(error){ showToast('Could not send PDF: ' + errMsg(error), true); return; }
+
+  const threadEl = document.getElementById('adminChatThread');
+  threadEl.innerHTML += `<div class="chat-msg buyer">${text}</div>`;
+  threadEl.scrollTop = threadEl.scrollHeight;
+  showToast('PDF sent to buyer.');
+}
+
+/* ================= GIG CARD MENU (report / remove) ================= */
+let sharedMenuGigId = null;
+
+function toggleGigMenu(e, id){
+  e.stopPropagation();
+  const btn = e.currentTarget;
+  const menu = document.getElementById('sharedGigMenu');
+
+  if(sharedMenuGigId === id && menu.classList.contains('show')){
+    menu.classList.remove('show');
+    sharedMenuGigId = null;
+    return;
+  }
+  sharedMenuGigId = id;
+
+  const rect = btn.getBoundingClientRect();
+  menu.style.top = (rect.bottom + 6) + 'px';
+  menu.style.right = (window.innerWidth - rect.right) + 'px';
+  menu.style.left = 'auto';
+
+  const isAdminUser = currentUser && ADMIN_EMAILS.includes(currentUser.email);
+  menu.innerHTML = `
+    <button onclick="reportGig('${id}')">🚩 Report &amp; feedback</button>
+    ${isAdminUser ? `<button onclick="openEditGigModal('${id}')">✏️ Edit gig</button>` : ''}
+    ${isAdminUser ? `<button class="danger" onclick="removeGig('${id}')">🗑️ Remove gig</button>` : ''}
+  `;
+  menu.classList.add('show');
+}
+document.addEventListener('click', () => {
+  document.getElementById('sharedGigMenu').classList.remove('show');
+  sharedMenuGigId = null;
+});
+
+async function reportGig(id){
+  document.getElementById('sharedGigMenu').classList.remove('show');
+  const reason = prompt('What would you like to report or share feedback about this gig?');
+  if(!reason || !reason.trim()) return;
+  const { error } = await sbInsert('reports', {
+    post_id: id, reporter_id: currentUser.id, reporter_name: currentUser.name, reason: reason.trim()
+  });
+  if(error){ showToast('Could not submit report: ' + errMsg(error), true); return; }
+  showToast('Thanks — your feedback has been submitted.');
+}
+
+async function reportOrderIssue(){
+  if(!currentGigForOrder){ showToast('Could not find this order.', true); return; }
+  const reason = prompt('What went wrong with this order? (e.g. seller not responding, threats, no delivery, etc.)');
+  if(!reason || !reason.trim()) return;
+
+  const { error } = await sbInsert('reports', {
+    post_id: currentGigForOrder.dbRow ? currentGigForOrder.id : null,
+    order_id: currentOrderDbId,
+    reporter_id: currentUser.id,
+    reporter_name: currentUser.name,
+    reason: reason.trim()
+  });
+  if(error){ showToast('Could not submit report: ' + errMsg(error), true); return; }
+  showToast('Report submitted — our team will review it and get back to you.');
+}
+
+/* ================= REPORT A SELLER (user report, shown to Team Gignary + admin) ================= */
+
+/* Sends a notification: shows it instantly if it's for the currently logged-in user,
+   and always saves it to the DB so it's there next time they open the app. */
+async function notifyUser(userId, text){
+  if(!userId) return;
+  if(currentUser && userId === currentUser.id){ addNotification(text); }
+  try{
+    const { error } = await sbInsert('notifications', { user_id: userId, text, read: false });
+    if(error) console.error('Could not save notification:', errMsg(error));
+  } catch(err){ console.error('Could not save notification:', err.message); }
+}
+
+function openReportUserModal(){
+  if(!currentUser){ showToast('Report karne ke liye pehle login karein.', true); return; }
+  document.getElementById('reportUserForm').reset();
+  const prefill = (currentSellerViewData && currentSellerViewData.name) || '';
+  document.getElementById('reportUserName').value = prefill;
+  document.getElementById('reportUserModalBackdrop').classList.add('show');
+}
+
+document.getElementById('reportUserForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  if(!currentUser){ showToast('Report karne ke liye pehle login karein.', true); return; }
+  const reportedName = document.getElementById('reportUserName').value.trim();
+  const reason = document.getElementById('reportUserReason').value;
+  const details = document.getElementById('reportUserDetails').value.trim();
+  if(!reportedName){ showToast('Kis ko report karna hai, yeh likhna zaroori hai.', true); return; }
+  if(!reason){ showToast('Reason chunna zaroori hai.', true); return; }
+
+  const btn = e.target.querySelector('button[type=submit]');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Submitting...';
+
+  const { error } = await sbInsert('reports', {
+    type: 'user',
+    reported_name: reportedName,
+    reporter_id: currentUser.id,
+    reporter_name: currentUser.name,
+    reporter_email: currentUser.email,
+    reason,
+    description: details,
+    status: 'pending'
+  });
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error){ showToast('Report submit nahi ho saki: ' + errMsg(error), true); return; }
+
+  closeModal('reportUserModalBackdrop');
+  showToast('Aapki report submit ho gayi — Team Gignary jald review karegi.');
+  notifyUser(currentUser.id, `Aapki report "${reportedName}" ke khilaf submit ho gayi hai. Team Gignary jald review karegi.`);
+  refreshAdminReportsBadge();
+});
+
+async function loadAdminReports(){
+  const el = document.getElementById('adminReportsList');
+  const { data, error } = await sbSelect('reports', 'select=*&order=created_at.desc');
+  if(error){ el.innerHTML = `<p style="color:var(--sage);">Reports load nahi hue: ${errMsg(error)}</p>`; return; }
+  if(!data || !data.length){ el.innerHTML = '<p style="color:var(--sage);">Abhi tak koi report nahi hai.</p>'; return; }
+  el.innerHTML = data.map(r => {
+    const target = r.reported_name || (r.post_id ? 'Gig #' + r.post_id : 'Report');
+    const isAccepted = r.status === 'accepted';
+    return `
+    <div class="admin-card">
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px;">
+        <b>${target}</b>
+        <span class="chip" style="pointer-events:none; ${isAccepted ? 'background:var(--green); color:#fff;' : ''}">${isAccepted ? 'Accepted' : 'Pending'}</span>
+      </div>
+      <p style="font-size:12.5px; color:var(--sage); margin:4px 0 8px;">By ${r.reporter_name || 'User'}${r.reporter_email ? ' · ' + r.reporter_email : ''} · ${r.created_at ? new Date(r.created_at).toLocaleString() : ''}</p>
+      ${r.reason ? `<p style="font-size:13px; margin-bottom:4px;"><b>Reason:</b> ${r.reason}</p>` : ''}
+      ${r.description ? `<p style="white-space:pre-wrap; font-size:13.5px;">${r.description}</p>` : ''}
+      ${!isAccepted ? `<button class="btn btn-primary btn-sm" style="margin-top:10px;" onclick="acceptReport('${r.id}', ${JSON.stringify(target)}, ${JSON.stringify(r.reporter_id || '')})">✓ Mark accepted</button>` : ''}
+    </div>`;
+  }).join('');
+}
+
+async function acceptReport(id, targetName, reporterId){
+  if(!confirm('Is report ko accepted mark karna hai?')) return;
+  const { error } = await sbUpdate('reports', id, { status: 'accepted' });
+  if(error){ showToast('Status update nahi ho saka: ' + errMsg(error), true); return; }
+  showToast('Report accepted mark ho gayi.');
+  if(reporterId){
+    notifyUser(reporterId, `Aapki report "${targetName}" ke khilaf review kar li gayi hai aur accept ho gayi hai. Shukriya Gignary istemaal karne ke liye.`);
+  }
+  loadAdminReports();
+  refreshAdminReportsBadge();
+}
+
+/* Shows a badge with the count of pending reports next to the admin's "Reports" tab / Admin panel menu item. */
+async function refreshAdminReportsBadge(){
+  if(!currentUser || !ADMIN_EMAILS.includes(currentUser.email)) return;
+  const { data, error } = await sbSelect('reports', 'status=eq.pending&select=id');
+  const badge = document.getElementById('adminReportsBadge');
+  if(error || !data || !data.length){ badge.style.display = 'none'; return; }
+  badge.textContent = data.length;
+  badge.style.display = 'inline-block';
+}
+
+async function removeGig(id){
+  document.getElementById('sharedGigMenu').classList.remove('show');
+  if(!confirm('Remove this gig? This cannot be undone.')) return;
+  const { error } = await sbDelete('posts', id);
+  if(error){ showToast('Could not remove gig: ' + errMsg(error), true); return; }
+  posts = posts.filter(p => p.id !== id);
+  renderFeed();
+  showToast('Gig removed.');
+}
+
+/* ================= ADD GIG (admin only) ================= */
+let addGigPendingMedia = null, addGigPendingMediaType = null;
+let addGigPendingCover = null;
+let addGigPendingDp = null;
+
+function openAddGigModal(presetSellerName){
+  const select = document.getElementById('addGigSellerSelect');
+  const sellerNames = [...new Set(posts.map(p => p.seller))].sort();
+  select.innerHTML = '<option value="__new__">➕ New seller</option>' +
+    sellerNames.map(name => `<option value="${name}">${name}</option>`).join('');
+
+  document.getElementById('addGigForm').reset();
+  select.value = (presetSellerName && sellerNames.includes(presetSellerName)) ? presetSellerName : '__new__';
+  onAddGigSellerChange();
+
+  document.getElementById('addGigMediaPreview').classList.remove('show');
+  document.getElementById('addGigMediaDropText').textContent = '📎 Click to upload gig photo or video';
+  document.getElementById('addGigCoverField').style.display = 'none';
+  addGigPendingMedia = null; addGigPendingMediaType = null; addGigPendingCover = null; addGigPendingDp = null;
+
+  document.getElementById('addGigModalBackdrop').classList.add('show');
+}
+
+function onAddGigSellerChange(){
+  const isNew = document.getElementById('addGigSellerSelect').value === '__new__';
+  document.getElementById('newSellerFields').style.display = isNew ? 'block' : 'none';
+}
+
+document.getElementById('addGigMedia').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  addGigPendingMedia = file;
+  addGigPendingMediaType = file.type.startsWith('video') ? 'video' : 'image';
+  const url = URL.createObjectURL(file);
+  const preview = document.getElementById('addGigMediaPreview');
+  preview.innerHTML = addGigPendingMediaType === 'video' ? `<video src="${url}" controls muted></video>` : `<img src="${url}">`;
+  preview.classList.add('show');
+  document.getElementById('addGigMediaDropText').textContent = '✓ ' + file.name;
+  document.getElementById('addGigCoverField').style.display = addGigPendingMediaType === 'video' ? 'block' : 'none';
+});
+
+document.getElementById('addGigCoverMedia').addEventListener('change', e => {
+  addGigPendingCover = e.target.files[0] || null;
+});
+
+document.getElementById('addGigDpMedia').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  openCropModal(file, croppedFile => {
+    addGigPendingDp = croppedFile;
+    showToast('DP ready — it will be saved when you add the gig.');
+  });
+  e.target.value = '';
+});
+
+/* Live thousands-comma formatting for price inputs (e.g. typing 1000 -> 1,000),
+   cursor-position safe so backspace/delete still work normally. */
+function formatPriceLive(e){
+  const el = e.target;
+  const cursorPos = el.selectionStart;
+  const original = el.value;
+
+  const prefixMatch = original.match(/^[^\d]*/);
+  const prefix = prefixMatch[0];
+  const restBeforeCursor = original.slice(prefix.length, cursorPos);
+  const digitsBeforeCursor = (restBeforeCursor.match(/\d/g) || []).length;
+
+  const digitsOnly = original.slice(prefix.length).replace(/[^\d]/g, '');
+  const formattedNum = digitsOnly ? parseInt(digitsOnly, 10).toLocaleString('en-US') : '';
+  el.value = prefix + formattedNum;
+
+  let newPos = prefix.length;
+  let seen = 0;
+  for(let i = 0; i < formattedNum.length; i++){
+    newPos = prefix.length + i + 1;
+    if(/\d/.test(formattedNum[i])) seen++;
+    if(seen >= digitsBeforeCursor) break;
+  }
+  if(digitsBeforeCursor === 0) newPos = prefix.length;
+  el.setSelectionRange(newPos, newPos);
+}
+document.getElementById('addGigPrice').addEventListener('input', formatPriceLive);
+document.getElementById('editGigPrice').addEventListener('input', formatPriceLive);
+
+document.getElementById('addGigForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const btn = e.target.querySelector('button[type=submit]');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Adding...';
+
+  const tagsRawEarly = document.getElementById('addGigTags').value.trim();
+  const tagsListEarly = tagsRawEarly.split(',').map(t => t.trim()).filter(Boolean);
+  if(tagsListEarly.length > 5){
+    showToast('You can add up to 5 tags only.', true);
+    btn.disabled = false; btn.textContent = originalLabel;
+    return;
+  }
+
+  const sellerSelectVal = document.getElementById('addGigSellerSelect').value;
+  const isNewSeller = sellerSelectVal === '__new__';
+
+  const sellerName = isNewSeller ? document.getElementById('addGigNewSellerName').value.trim() : sellerSelectVal;
+  if(!sellerName){
+    showToast('Please enter a seller name.', true);
+    btn.disabled = false; btn.textContent = originalLabel;
+    return;
+  }
+  const sellerBio = isNewSeller ? document.getElementById('addGigNewSellerBio').value.trim() : (posts.find(p => p.seller === sellerName) || {}).sellerBio || '';
+  const sellerSkills = isNewSeller ? document.getElementById('addGigNewSellerSkills').value.trim() : (posts.find(p => p.seller === sellerName) || {}).sellerSkills || '';
+  const sellerLanguage = isNewSeller ? document.getElementById('addGigNewSellerLanguage').value.trim() : (posts.find(p => p.seller === sellerName) || {}).sellerLanguage || '';
+  let sellerAvatarUrl = isNewSeller ? null : (posts.find(p => p.seller === sellerName) || {}).sellerAvatarUrl || null;
+
+  if(isNewSeller){
+    const dpFile = addGigPendingDp;
+    if(dpFile){
+      const safeName = 'dp.png';
+      const filePath = currentUser.id + '/dp/' + Date.now() + '-' + safeName;
+      const { error: dpError } = await sbUpload(filePath, dpFile);
+      if(!dpError) sellerAvatarUrl = sbPublicUrl(filePath);
+    }
+  }
+
+  let mediaUrl = null, mediaType = null, mediaPosterUrl = null;
+  if(addGigPendingMedia){
+    mediaType = addGigPendingMediaType;
+    const safeName = addGigPendingMedia.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const filePath = currentUser.id + '/' + Date.now() + '-' + safeName;
+    const { error: uploadError } = await sbUpload(filePath, addGigPendingMedia);
+    if(uploadError){
+      showToast('Could not upload media: ' + errMsg(uploadError), true);
+      btn.disabled = false; btn.textContent = originalLabel;
+      return;
+    }
+    mediaUrl = sbPublicUrl(filePath);
+
+    if(mediaType === 'video' && addGigPendingCover){
+      const coverSafeName = addGigPendingCover.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+      const coverPath = currentUser.id + '/cover/' + Date.now() + '-' + coverSafeName;
+      const { error: coverError } = await sbUpload(coverPath, addGigPendingCover);
+      if(!coverError) mediaPosterUrl = sbPublicUrl(coverPath);
+    }
+  }
+
+  const title = document.getElementById('addGigTitle').value.trim();
+  const category = document.getElementById('addGigCat').value;
+  const price = document.getElementById('addGigPrice').value.trim();
+  const description = document.getElementById('addGigDesc').value.trim();
+  const tagsRaw = document.getElementById('addGigTags').value.trim();
+  const tags = tagsRaw.split(',').map(t => t.trim()).filter(Boolean).join(', ');
+
+  const { error } = await sbInsert('posts', {
+    seller_name: sellerName,
+    seller_bio: sellerBio,
+    seller_skills: sellerSkills,
+    seller_language: sellerLanguage,
+    seller_avatar_url: sellerAvatarUrl,
+    title, category, price, description, tags,
+    rating: 'New',
+    media_url: mediaUrl, media_type: mediaType, media_poster_url: mediaPosterUrl
+  });
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error){ showToast('Could not add gig: ' + errMsg(error), true); return; }
+
+  closeModal('addGigModalBackdrop');
+  showToast('Gig added!');
+  await loadPostsFromDB();
+  renderFeed();
+  loadAdminGigs();
+});
+
+/* ================= EDIT GIG (admin only) ================= */
+let currentEditGigId = null;
+let editGigPendingDp = null;
+
+function openEditGigModal(id){
+  document.getElementById('sharedGigMenu').classList.remove('show');
+  const p = posts.find(g => g.id === id);
+  if(!p) return;
+  currentEditGigId = id;
+
+  document.getElementById('editGigTitle').value = p.title || '';
+  document.getElementById('editGigCat').value = p.cat || 'Design';
+  document.getElementById('editGigPrice').value = p.price || '';
+  document.getElementById('editGigDesc').value = p.desc || '';
+  document.getElementById('editGigTags').value = p.tags || '';
+  document.getElementById('editGigSellerNameLabel').textContent = p.seller || '';
+  document.getElementById('editGigSellerBio').value = p.sellerBio || '';
+  document.getElementById('editGigSellerSkills').value = p.sellerSkills || '';
+  document.getElementById('editGigSellerLanguage').value = p.sellerLanguage || '';
+  document.getElementById('editGigDpInput').value = '';
+  editGigPendingDp = null;
+
+  document.getElementById('editGigModalBackdrop').classList.add('show');
+}
+
+document.getElementById('editGigDpInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  openCropModal(file, croppedFile => {
+    editGigPendingDp = croppedFile;
+    showToast('DP ready — it will be saved when you click Save changes.');
+  });
+  e.target.value = '';
+});
+
+document.getElementById('editGigForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const p = posts.find(g => g.id === currentEditGigId);
+  if(!p) return;
+
+  const btn = e.target.querySelector('button[type=submit]');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  const tagsRaw = document.getElementById('editGigTags').value.trim();
+  const tagsList = tagsRaw.split(',').map(t => t.trim()).filter(Boolean);
+  if(tagsList.length > 5){
+    showToast('You can add up to 5 tags only.', true);
+    btn.disabled = false; btn.textContent = originalLabel;
+    return;
+  }
+
+  const title = document.getElementById('editGigTitle').value.trim();
+  const category = document.getElementById('editGigCat').value;
+  const price = document.getElementById('editGigPrice').value.trim();
+  const description = document.getElementById('editGigDesc').value.trim();
+  const tags = tagsList.join(', ');
+  const sellerBio = document.getElementById('editGigSellerBio').value.trim();
+  const sellerSkills = document.getElementById('editGigSellerSkills').value.trim();
+  const sellerLanguage = document.getElementById('editGigSellerLanguage').value.trim();
+  const dpFile = editGigPendingDp;
+
+  let sellerAvatarUrl = p.sellerAvatarUrl || null;
+  if(dpFile){
+    const safeName = dpFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const filePath = (currentUser.id) + '/dp/' + Date.now() + '-' + safeName;
+    const { error: uploadError } = await sbUpload(filePath, dpFile);
+    if(uploadError){
+      showToast('Could not upload DP: ' + errMsg(uploadError), true);
+      btn.disabled = false; btn.textContent = originalLabel;
+      return;
+    }
+    sellerAvatarUrl = sbPublicUrl(filePath);
+  }
+
+  const { error: gigError } = await sbUpdate('posts', currentEditGigId, {
+    title, category, price, description, tags
+  });
+  if(gigError){
+    showToast('Could not save gig: ' + errMsg(gigError), true);
+    btn.disabled = false; btn.textContent = originalLabel;
+    return;
+  }
+
+  const sellerRes = await fetch(SUPABASE_URL + '/rest/v1/posts?seller_name=eq.' + encodeURIComponent(p.seller), {
+    method: 'PATCH',
+    headers: authHeaders({ 'Content-Type':'application/json' }),
+    body: JSON.stringify({ seller_bio: sellerBio, seller_skills: sellerSkills, seller_language: sellerLanguage, seller_avatar_url: sellerAvatarUrl })
+  });
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(!sellerRes.ok){ showToast('Gig saved, but could not update seller info.', true); }
+
+  closeModal('editGigModalBackdrop');
+  showToast('Gig updated.');
+  await loadPostsFromDB();
+  renderFeed();
+});
+function openLightboxFromDetail(){
+  if(!currentGigDetail || !currentGigDetail.media) return;
+  const content = document.getElementById('lightboxContent');
+  const posterAttr = currentGigDetail.mediaPoster ? ` poster="${currentGigDetail.mediaPoster}"` : '';
+  content.innerHTML = currentGigDetail.mediaType === 'video'
+    ? `<video src="${currentGigDetail.media}"${posterAttr} controls autoplay playsinline></video>`
+    : `<img src="${currentGigDetail.media}" alt="${currentGigDetail.title}">`;
+  document.getElementById('lightboxBackdrop').classList.add('show');
+}
+
+function openGigDetail(gigId){
+  const p = posts.find(g => g.id === gigId);
+  if(!p) return;
+  currentGigDetail = p;
+  document.getElementById('gigDetailMedia').innerHTML = mediaBlock(p);
+  document.getElementById('gigDetailCat').textContent = p.cat;
+  document.getElementById('gigDetailTitle').textContent = p.title;
+  document.getElementById('gigDetailPrice').textContent = p.price;
+  document.getElementById('gigDetailRating').textContent = p.rating;
+  document.getElementById('gigDetailDesc').textContent = p.desc;
+  document.getElementById('gigDetailSellerAvatar').innerHTML = p.sellerAvatarUrl
+    ? `<img src="${p.sellerAvatarUrl}" alt="${p.seller}">`
+    : (p.seller || 'S').charAt(0).toUpperCase();
+  document.getElementById('gigDetailSellerName').textContent = p.seller || 'Seller';
+  document.getElementById('gigDetailBackdrop').classList.add('show');
+
+  document.getElementById('gigDetailChatBtn').onclick = () => { closeModal('gigDetailBackdrop'); openChatModal(p.id); };
+  document.getElementById('gigDetailOrderBtn').onclick = () => { closeModal('gigDetailBackdrop'); openOrderModal(p.id); };
+}
+
+function viewSellerFromGigDetail(){
+  if(!currentGigDetail) return;
+  closeModal('gigDetailBackdrop');
+  openSellerProfile(currentGigDetail.seller, currentGigDetail.sellerBio, currentGigDetail.sellerAvatarUrl, currentGigDetail.sellerSkills, currentGigDetail.sellerLanguage);
+}
+
+let currentSellerViewData = null;
+
+function openSellerProfile(sellerName, sellerBio, sellerAvatarUrl, sellerSkills, sellerLanguage){
+  currentSellerViewData = { name: sellerName, bio: sellerBio, avatarUrl: sellerAvatarUrl, skills: sellerSkills, language: sellerLanguage };
+
+  document.getElementById('sellerNameHeading').textContent = sellerName || 'Seller';
+  document.getElementById('sellerAvatarLg').innerHTML = sellerAvatarUrl
+    ? `<img src="${sellerAvatarUrl}" alt="${sellerName}">`
+    : (sellerName || 'S').charAt(0).toUpperCase();
+  document.getElementById('sellerBioText').textContent = sellerBio || 'Trusted freelancer on Gignary.';
+
+  const tagsRow = document.getElementById('sellerTagsRow');
+  let tagsHtml = '';
+  if(sellerSkills) tagsHtml += `<span class="seller-tag-chip"><b>Skills:</b> ${sellerSkills}</span>`;
+  if(sellerLanguage) tagsHtml += `<span class="seller-tag-chip"><b>Language:</b> ${sellerLanguage}</span>`;
+  tagsRow.innerHTML = tagsHtml;
+
+  const sellerGigs = posts.filter(p => p.seller === sellerName);
+  document.getElementById('sellerGigGrid').innerHTML = sellerGigs.length
+    ? sellerGigs.map(cardHTML).join('')
+    : '<p style="color:var(--sage);">No gigs from this seller yet.</p>';
+
+  document.getElementById('sellerRatingBadge').textContent = '';
+  sbSelect('ratings', 'seller_name=eq.' + encodeURIComponent(sellerName) + '&select=stars').then(({ data }) => {
+    if(data && data.length){
+      const avg = (data.reduce((sum, r) => sum + r.stars, 0) / data.length).toFixed(1);
+      document.getElementById('sellerRatingBadge').textContent = `★ ${avg} · ${data.length} rating${data.length === 1 ? '' : 's'}`;
+    }
+  });
+
+  const isAdminUser = currentUser && ADMIN_EMAILS.includes(currentUser.email);
+  document.getElementById('addGigToSellerBtn').style.display = isAdminUser ? 'inline-flex' : 'none';
+
+  setSubView('seller');
+}
+
+/* ================= NOTIFICATIONS ================= */
+let notificationsEnabled = true;
+let notifications = [];
+
+function toggleNotifications(btn){
+  btn.classList.toggle('on');
+  notificationsEnabled = btn.classList.contains('on');
+}
+
+function addNotification(text){
+  if(!notificationsEnabled) return;
+  notifications.unshift({ text, time: new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' }), read:false });
+  renderNotifications();
+}
+
+async function loadNotificationsFromDB(){
+  if(!currentUser) return;
+  const { data, error } = await sbSelect('notifications', 'user_id=eq.' + currentUser.id + '&select=*&order=created_at.desc');
+  if(error){ console.error('Could not load notifications:', errMsg(error)); return; }
+  const dbNotifs = (data || []).map(n => ({
+    id: n.id, text: n.text, read: n.read,
+    time: new Date(n.created_at).toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
+  }));
+  notifications = [...dbNotifs, ...notifications];
+  renderNotifications();
+}
+
+function renderNotifications(){
+  const list = document.getElementById('notifList');
+  const dot = document.getElementById('notifDot');
+  if(notifications.length === 0){
+    list.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+    dot.style.display = 'none';
+    return;
+  }
+  list.innerHTML = notifications.map(n => `<div class="notif-item">${n.text}<small>${n.time}</small></div>`).join('');
+  dot.style.display = notifications.some(n => !n.read) ? 'block' : 'none';
+}
+
+const notifBtn = document.getElementById('notifBtn');
+const notifDropdown = document.getElementById('notifDropdown');
+notifBtn.addEventListener('click', e => {
+  e.stopPropagation();
+  notifDropdown.classList.toggle('show');
+  notifications.forEach(n => {
+    if(!n.read && n.id) sbUpdate('notifications', n.id, { read: true });
+    n.read = true;
+  });
+  document.getElementById('notifDot').style.display = 'none';
+});
+document.addEventListener('click', () => notifDropdown.classList.remove('show'));
+
+document.addEventListener('click', e => {
+  const orderBtn = e.target.closest('.order-btn');
+  const chatBtn = e.target.closest('.chat-btn');
+  if(orderBtn) openOrderModal(orderBtn.dataset.id);
+  if(chatBtn) openChatModal(chatBtn.dataset.id);
+});
+
+/* ================= ORDER MODAL ================= */
+function buildRingSVG(svgEl, stageIndex){
+  const radii = [65, 48, 31, 14];
+  let s = '';
+  radii.forEach((r,i) => {
+    const filled = i <= stageIndex;
+    const c = 2*Math.PI*r;
+    s += `<circle cx="75" cy="75" r="${r}" fill="none" stroke="#DCEEE3" stroke-width="8"/>`;
+    if(filled) s += `<circle cx="75" cy="75" r="${r}" fill="none" stroke="#1F9D55" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*0.08}" transform="rotate(-90 75 75)"/>`;
+  });
+  s += `<text x="75" y="80" text-anchor="middle" fill="#0B3D2E" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600">${stageIndex+1}/4</text>`;
+  svgEl.innerHTML = s;
+}
+function buildStageLabels(container, stageIndex){
+  container.innerHTML = '';
+  STAGES.forEach((s,i) => {
+    const div = document.createElement('div');
+    div.className = 'stage' + (i <= stageIndex ? ' active' : '');
+    div.innerHTML = `<span class="swatch"></span>${s}`;
+    container.appendChild(div);
+  });
+}
+
+function openOrderModal(gigId){
+  currentGigForOrder = posts.find(p => p.id === gigId);
+  document.getElementById('orderModalTitle').textContent = 'Order: ' + currentGigForOrder.title;
+  document.getElementById('orderForm').style.display = 'block';
+  document.getElementById('confirmBox').classList.remove('show');
+  if(currentUser){
+    document.getElementById('buyerName').value = currentUser.name;
+    document.getElementById('buyerContact').value = currentUser.email;
+  }
+  document.getElementById('orderModalBackdrop').classList.add('show');
+}
+function closeModal(id){
+  document.getElementById(id).classList.remove('show');
+  if(id === 'lightboxBackdrop'){ document.getElementById('lightboxContent').innerHTML = ''; }
+  if(id === 'chatModalBackdrop'){ clearInterval(chatPollInterval); }
+}
+
+/* ================= PHOTO CROP MODAL (shared) ================= */
+let cropCallback = null;
+let cropImgObj = null;
+let cropOffsetX = 0, cropOffsetY = 0, cropScale = 1, cropMinScale = 1;
+let cropDragging = false, cropDragStartX = 0, cropDragStartY = 0, cropStartOffsetX = 0, cropStartOffsetY = 0;
+
+function openCropModal(file, callback){
+  if(!file) return;
+  cropCallback = callback;
+  const reader = new FileReader();
+  reader.onload = e => {
+    const img = new Image();
+    img.onload = () => {
+      cropImgObj = img;
+      const canvas = document.getElementById('cropCanvas');
+      cropMinScale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      cropScale = cropMinScale;
+      cropOffsetX = 0; cropOffsetY = 0;
+      const slider = document.getElementById('cropZoomSlider');
+      slider.min = cropMinScale;
+      slider.max = cropMinScale * 4;
+      slider.step = (cropMinScale * 4 - cropMinScale) / 100 || 0.01;
+      slider.value = cropScale;
+      drawCropCanvas();
+      document.getElementById('cropModalBackdrop').classList.add('show');
+    };
+    img.src = e.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+
+function drawCropCanvas(){
+  const canvas = document.getElementById('cropCanvas');
+  const ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#111';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if(!cropImgObj) return;
+  const w = cropImgObj.width * cropScale;
+  const h = cropImgObj.height * cropScale;
+  const x = (canvas.width - w) / 2 + cropOffsetX;
+  const y = (canvas.height - h) / 2 + cropOffsetY;
+  ctx.drawImage(cropImgObj, x, y, w, h);
+}
+
+const cropCanvasWrap = document.querySelector('.crop-canvas-wrap');
+function cropPointerDown(clientX, clientY){
+  cropDragging = true;
+  cropDragStartX = clientX; cropDragStartY = clientY;
+  cropStartOffsetX = cropOffsetX; cropStartOffsetY = cropOffsetY;
+}
+function cropPointerMove(clientX, clientY){
+  if(!cropDragging) return;
+  const canvas = document.getElementById('cropCanvas');
+  const rect = canvas.getBoundingClientRect();
+  const scaleRatio = canvas.width / rect.width;
+  cropOffsetX = cropStartOffsetX + (clientX - cropDragStartX) * scaleRatio;
+  cropOffsetY = cropStartOffsetY + (clientY - cropDragStartY) * scaleRatio;
+  drawCropCanvas();
+}
+cropCanvasWrap.addEventListener('mousedown', e => cropPointerDown(e.clientX, e.clientY));
+document.addEventListener('mousemove', e => cropPointerMove(e.clientX, e.clientY));
+document.addEventListener('mouseup', () => cropDragging = false);
+cropCanvasWrap.addEventListener('touchstart', e => { const t = e.touches[0]; cropPointerDown(t.clientX, t.clientY); }, { passive:true });
+document.addEventListener('touchmove', e => { if(cropDragging){ const t = e.touches[0]; cropPointerMove(t.clientX, t.clientY); } }, { passive:true });
+document.addEventListener('touchend', () => cropDragging = false);
+
+document.getElementById('cropZoomSlider').addEventListener('input', e => {
+  cropScale = parseFloat(e.target.value);
+  drawCropCanvas();
+});
+
+function cancelCrop(){
+  closeModal('cropModalBackdrop');
+  cropCallback = null;
+  cropImgObj = null;
+}
+
+function saveCrop(){
+  const canvas = document.getElementById('cropCanvas');
+  canvas.toBlob(blob => {
+    const file = new File([blob], 'cropped-photo.png', { type: 'image/png' });
+    const cb = cropCallback;
+    closeModal('cropModalBackdrop');
+    cropCallback = null;
+    cropImgObj = null;
+    if(cb) cb(file);
+  }, 'image/png');
+}
+
+document.getElementById('orderForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const name = document.getElementById('buyerName').value.trim();
+  const contact = document.getElementById('buyerContact').value.trim();
+  const budget = parseInt(document.getElementById('buyerBudget').value, 10);
+  const deadline = document.getElementById('buyerDeadline').value || null;
+  const details = document.getElementById('buyerDetails').value.trim();
+
+  if(!budget || budget < 100){
+    showToast('Minimum order budget is PKR 100.', true);
+    return;
+  }
+
+  const orderCode = 'GIG-' + Math.floor(10000 + Math.random()*89999);
+
+  const btn = e.target.querySelector('button[type=submit]');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Placing order...';
+
+  const { data, error } = await sbInsert('orders', {
+    order_code: orderCode,
+    post_id: currentGigForOrder.dbRow ? currentGigForOrder.id : null,
+    buyer_id: currentUser.id,
+    gig_title: currentGigForOrder.title,
+    buyer_name: name,
+    buyer_contact: contact,
+    budget: String(budget), deadline, details,
+    stage_index: 0,
+    payment_status: 'pending'
+  });
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error){ showToast('Could not place order: ' + errMsg(error), true); return; }
+
+  currentOrderDbId = data ? data.id : null;
+  document.getElementById('confirmOrderId').textContent = orderCode;
+  document.getElementById('confirmSummary').textContent = `${currentGigForOrder.title} for ${name} — we'll reach out at ${contact} shortly.`;
+  document.getElementById('confirmPaymentAmount').textContent = 'PKR ' + budget;
+  document.getElementById('transactionIdInput').value = '';
+  document.getElementById('paymentStatusNote').textContent = '';
+  document.getElementById('submitPaymentBtn').disabled = false;
+  document.getElementById('submitPaymentBtn').textContent = 'Submit payment';
+  buildRingSVG(document.getElementById('confirmRingSvg'), 0);
+  buildStageLabels(document.getElementById('confirmStageLabels'), 0);
+  document.getElementById('orderForm').style.display = 'none';
+  document.getElementById('confirmBox').classList.add('show');
+  addNotification(`Order ${orderCode} placed for "${currentGigForOrder.title}".`);
+  e.target.reset();
+});
+
+document.getElementById('paymentReceiptInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  const note = document.getElementById('paymentReceiptPreviewNote');
+  note.textContent = file ? '✓ ' + file.name + ' selected' : '';
+});
+
+async function submitPaymentProof(){
+  const txnId = document.getElementById('transactionIdInput').value.trim();
+  const method = document.getElementById('paymentMethodSelect').value;
+  const receiptFile = document.getElementById('paymentReceiptInput').files[0];
+  if(!txnId){
+    showToast('Please enter your transaction ID.', true);
+    return;
+  }
+  if(!receiptFile){
+    showToast('Please attach a screenshot of your payment receipt.', true);
+    return;
+  }
+  if(!currentOrderDbId){
+    showToast('Could not find this order — please contact support.', true);
+    return;
+  }
+
+  const btn = document.getElementById('submitPaymentBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Uploading receipt...';
+
+  const safeName = receiptFile.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+  const filePath = currentUser.id + '/receipts/' + currentOrderDbId + '-' + Date.now() + '-' + safeName;
+  const { error: uploadError } = await sbUpload(filePath, receiptFile);
+  if(uploadError){
+    btn.disabled = false; btn.textContent = originalLabel;
+    showToast('Could not upload receipt: ' + errMsg(uploadError), true);
+    return;
+  }
+  const receiptUrl = sbPublicUrl(filePath);
+
+  btn.textContent = 'Submitting...';
+  const { error } = await sbUpdate('orders', currentOrderDbId, {
+    payment_method: method,
+    transaction_id: txnId,
+    payment_receipt_url: receiptUrl,
+    payment_status: 'submitted'
+  });
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error){ showToast('Could not submit payment: ' + errMsg(error), true); return; }
+
+  document.getElementById('paymentStatusNote').textContent = '✓ Payment submitted — we\'ll confirm it shortly.';
+  showToast('Payment details submitted!');
+  addNotification('Payment details submitted for your order. We\'ll confirm shortly.');
+  document.getElementById('orderInstructionsBox').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* ================= CONVERSATION MODAL ================= */
+let chatPollInterval = null;
+let sellerRatedForGig = {};
+
+async function openChatModal(gigId){
+  currentGigForChat = posts.find(p => p.id === gigId);
+  document.getElementById('chatModalTitle').textContent = 'Conversation · ' + currentGigForChat.title;
+  if(currentGigForChat.dbRow){
+    if(sellerRatedForGig[gigId] === undefined){
+      const { data: existingRatings } = await sbSelect('ratings', 'post_id=eq.' + gigId + '&buyer_id=eq.' + currentUser.id + '&select=id');
+      sellerRatedForGig[gigId] = !!(existingRatings && existingRatings.length);
+    }
+    await loadMessagesFromDB(gigId);
+    clearInterval(chatPollInterval);
+    chatPollInterval = setInterval(() => loadMessagesFromDB(gigId), 4000);
+  } else {
+    if(!chatThreads[gigId]) chatThreads[gigId] = [{ from:'system', text: 'Say hello to get started — the seller usually replies within a few hours.' }];
+    renderChatThread(gigId);
+  }
+  document.getElementById('chatModalBackdrop').classList.add('show');
+}
+
+async function loadMessagesFromDB(postId){
+  const { data, error } = await sbSelect('messages', 'post_id=eq.' + postId + '&buyer_id=eq.' + currentUser.id + '&select=*&order=created_at.asc');
+  if(error){
+    console.error('Could not load messages:', errMsg(error));
+    chatThreads[postId] = [{ from:'system', text: 'Say hello to get started — the seller usually replies within a few hours.' }];
+  } else {
+    chatThreads[postId] = (data || []).map(m => ({
+      from: m.sender_id === currentUser.id ? 'buyer' : 'other',
+      text: m.text,
+      senderName: m.sender_id === currentUser.id ? null : m.sender_name
+    }));
+    if(chatThreads[postId].length === 0){
+      chatThreads[postId] = [{ from:'system', text: 'Say hello to get started — the seller usually replies within a few hours.' }];
+    }
+  }
+  renderChatThread(postId);
+}
+
+function renderChatThread(gigId){
+  const thread = chatThreads[gigId] || [];
+  const el = document.getElementById('chatThread');
+  let html = thread.map(m => `<div class="chat-msg ${m.from}">${m.senderName ? '<b>' + m.senderName + ':</b> ' : ''}${m.text}</div>`).join('');
+
+  const post = posts.find(p => p.id === gigId);
+  const lastMsg = thread[thread.length - 1];
+  const lastIsPdfFromSeller = lastMsg && lastMsg.from === 'other' && /📎/.test(lastMsg.text) && /\.pdf/i.test(lastMsg.text);
+  if(post && post.dbRow && lastIsPdfFromSeller && !sellerRatedForGig[gigId]){
+    html += `
+      <div class="chat-msg system">
+        <p style="margin:0 0 8px;">How was this delivery? Rate the seller:</p>
+        <div id="starRating-${gigId}" style="display:flex; gap:6px; font-size:26px;">
+          ${[1,2,3,4,5].map(n => `<span class="chat-star" data-n="${n}" onclick="submitSellerRating('${gigId}', ${n})" onmouseover="previewStars('${gigId}', ${n})" onmouseout="previewStars('${gigId}', 0)" style="cursor:pointer; color:#d8d8d8; transition:color .1s;">★</span>`).join('')}
+        </div>
+      </div>`;
+  }
+  el.innerHTML = html;
+  el.scrollTop = el.scrollHeight;
+}
+
+function previewStars(gigId, n){
+  const row = document.getElementById('starRating-' + gigId);
+  if(!row) return;
+  [...row.children].forEach((star, i) => { star.style.color = (i < n) ? '#F5A623' : '#d8d8d8'; });
+}
+
+async function submitSellerRating(gigId, stars){
+  const post = posts.find(p => p.id === gigId);
+  if(!post || sellerRatedForGig[gigId]) return;
+  sellerRatedForGig[gigId] = true;
+  renderChatThread(gigId);
+
+  const { error } = await sbInsert('ratings', {
+    post_id: gigId,
+    seller_name: post.seller,
+    buyer_id: currentUser.id,
+    buyer_name: currentUser.name,
+    stars
+  });
+  if(error){
+    showToast('Could not submit rating: ' + errMsg(error), true);
+    sellerRatedForGig[gigId] = false;
+    renderChatThread(gigId);
+    return;
+  }
+
+  showToast('Thanks for rating ' + post.seller + '!');
+  await refreshSellerRatingAverage(post.seller);
+}
+
+async function refreshSellerRatingAverage(sellerName){
+  const { data, error } = await sbSelect('ratings', 'seller_name=eq.' + encodeURIComponent(sellerName) + '&select=stars');
+  if(error || !data || !data.length) return;
+  const avg = (data.reduce((sum, r) => sum + r.stars, 0) / data.length).toFixed(1);
+
+  const sellerPosts = posts.filter(p => p.seller === sellerName && p.dbRow);
+  for(const p of sellerPosts){
+    p.rating = avg;
+    await sbUpdate('posts', p.id, { rating: avg });
+  }
+  renderFeed();
+
+  if(currentSellerViewData && currentSellerViewData.name === sellerName){
+    const badge = document.getElementById('sellerRatingBadge');
+    if(badge) badge.textContent = `★ ${avg} · ${data.length} rating${data.length === 1 ? '' : 's'}`;
+  }
+  if(currentGigDetail && currentGigDetail.seller === sellerName){
+    const el = document.getElementById('gigDetailRating');
+    if(el) el.textContent = avg;
+  }
+}
+document.getElementById('chatSendBtn').addEventListener('click', sendChat);
+document.getElementById('chatInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); sendChat(); } });
+async function sendChat(){
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if(!text || !currentGigForChat) return;
+  input.value = '';
+  chatThreads[currentGigForChat.id].push({ from:'buyer', text });
+  renderChatThread(currentGigForChat.id);
+  addNotification(`Message sent to ${currentGigForChat.seller || 'the seller'}.`);
+
+  if(currentGigForChat.dbRow){
+    const { error } = await sbInsert('messages', {
+      post_id: currentGigForChat.id,
+      buyer_id: currentUser.id,
+      sender_id: currentUser.id,
+      sender_name: currentUser.name,
+      text
+    });
+    if(error) console.error('Could not send message:', errMsg(error));
+  }
+}
+
+document.getElementById('chatPdfBtn').addEventListener('click', () => document.getElementById('chatPdfInput').click());
+document.getElementById('chatPdfInput').addEventListener('change', async e => {
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file || !currentGigForChat) return;
+  if(file.type !== 'application/pdf'){ showToast('Please choose a PDF file.', true); return; }
+
+  const btn = document.getElementById('chatPdfBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Uploading...';
+
+  const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+  const filePath = currentUser.id + '/chat/' + Date.now() + '-' + safeName;
+  const { error: uploadError } = await sbUpload(filePath, file);
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(uploadError){ showToast('Could not upload PDF: ' + errMsg(uploadError), true); return; }
+
+  const url = sbPublicUrl(filePath);
+  const text = `📎 <a href="${url}" target="_blank" rel="noopener">${safeName}</a>`;
+
+  chatThreads[currentGigForChat.id].push({ from:'buyer', text });
+  renderChatThread(currentGigForChat.id);
+  addNotification(`PDF sent to ${currentGigForChat.seller || 'the seller'}.`);
+
+  if(currentGigForChat.dbRow){
+    const { error } = await sbInsert('messages', {
+      post_id: currentGigForChat.id,
+      buyer_id: currentUser.id,
+      sender_id: currentUser.id,
+      sender_name: currentUser.name,
+      text
+    });
+    if(error) console.error('Could not send PDF message:', errMsg(error));
+  }
+});
+
+document.getElementById('feedbackFabBtn').addEventListener('click', () => {
+  document.getElementById('feedbackText').value = '';
+  document.getElementById('feedbackModalBackdrop').classList.add('show');
+});
+document.getElementById('feedbackSendBtn').addEventListener('click', async () => {
+  const text = document.getElementById('feedbackText').value.trim();
+  if(!text){ showToast('Please write your feedback first.', true); return; }
+  const btn = document.getElementById('feedbackSendBtn');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  const { error } = await sbInsert('feedback', {
+    user_id: currentUser.id,
+    user_name: currentUser.name,
+    user_email: currentUser.email,
+    text
+  });
+
+  let emailSent = false;
+  try{
+    const res = await fetchWithTimeout('https://formspree.io/f/mkjnpzoa', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        name: currentUser.name,
+        email: currentUser.email,
+        message: text,
+        _subject: 'Gignary feedback from ' + currentUser.name
+      })
+    }, 10000);
+    emailSent = res.ok;
+  } catch(err){ emailSent = false; }
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error && !emailSent){ showToast('Could not send feedback: ' + errMsg(error), true); return; }
+
+  closeModal('feedbackModalBackdrop');
+  showToast(emailSent ? 'Thanks! Your feedback was sent.' : 'Feedback saved — but the email notification failed to send.');
+});
+
+
+/* ================= PAGE INIT (session check) ================= */
+(async function(){
+  const oauthHandled = await handleOAuthRedirect();
+  const existing = loadSession();
+  if(!existing || !existing.user){
+    location.href = 'login.html';
+    return;
+  }
+  currentUser = existing.user;
+  await ensureValidSession();
+  if(!accessToken){
+    // refresh failed and token is gone/invalid — force a clean re-login instead of showing broken/empty data
+    clearSession();
+    location.href = 'login.html';
+    return;
+  }
+  enterApp();
+  // Keep the session fresh for long-open tabs so it never silently expires mid-use.
+  setInterval(ensureValidSession, 5 * 60 * 1000);
+})();
+</script>
+</body>
+</html>
