@@ -7,6 +7,7 @@
 <title>Dashboard — Gignary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -86,6 +87,26 @@
         </div>
       </div>
       <p id="searchResultsSummary" style="display:none; color:var(--sage); font-size:14px; margin:-6px 0 14px;"></p>
+      <div class="filter-bar">
+        <div class="filter-group">
+          <label for="sortSelect">Sort by</label>
+          <select id="sortSelect">
+            <option value="newest">Newest</option>
+            <option value="price-asc">Price: Low to High</option>
+            <option value="price-desc">Price: High to Low</option>
+            <option value="rating">Highest rated</option>
+          </select>
+        </div>
+        <div class="filter-group">
+          <label for="minPriceInput">Min price (PKR)</label>
+          <input type="number" id="minPriceInput" placeholder="0" min="0">
+        </div>
+        <div class="filter-group">
+          <label for="maxPriceInput">Max price (PKR)</label>
+          <input type="number" id="maxPriceInput" placeholder="Any" min="0">
+        </div>
+        <button class="btn btn-ghost btn-sm" onclick="clearFilters()" style="align-self:flex-end;">Clear filters</button>
+      </div>
       <div class="gig-grid" id="gigGrid"></div>
     </div>
 
@@ -220,13 +241,13 @@
         <div>
           <h2 style="font-size:24px;" id="sellerNameHeading">Seller name</h2>
           <span class="buyer-tag">Seller</span>
-          <span id="sellerRatingBadge" style="margin-left:8px; font-weight:700; color:var(--green);"></span>
         </div>
       </div>
       <p class="seller-bio" id="sellerBioText">Trusted freelancer on Gignary.</p>
       <div class="seller-tags-row" id="sellerTagsRow"></div>
-      <div style="display:flex; justify-content:space-between; align-items:center; margin:28px 0 16px;">
-        <h3 style="font-size:17px; margin:0;">Gigs by this seller</h3>
+      <div class="seller-stats-row" id="sellerStatsRow"></div>
+      <div style="display:flex; justify-content:space-between; align-items:center; margin:24px 0 16px;">
+        <h3 style="font-size:17px; margin:0;">Portfolio — gigs by this seller</h3>
         <button class="btn btn-primary btn-sm" id="addGigToSellerBtn" style="display:none;" onclick="openAddGigModal(currentSellerViewData && currentSellerViewData.name)">+ New gig</button>
       </div>
       <div class="gig-grid" id="sellerGigGrid"></div>
@@ -771,6 +792,38 @@ function cardHTML(p){
   `;
 }
 
+function parsePriceNum(str){
+  const n = parseInt(String(str || '').replace(/[^0-9]/g, ''), 10);
+  return isNaN(n) ? 0 : n;
+}
+
+let sortMode = 'newest';
+let minPrice = null;
+let maxPrice = null;
+
+function clearFilters(){
+  document.getElementById('sortSelect').value = 'newest';
+  document.getElementById('minPriceInput').value = '';
+  document.getElementById('maxPriceInput').value = '';
+  sortMode = 'newest'; minPrice = null; maxPrice = null;
+  renderFeed();
+}
+
+document.getElementById('sortSelect').addEventListener('change', e => {
+  sortMode = e.target.value;
+  renderFeed();
+});
+document.getElementById('minPriceInput').addEventListener('input', e => {
+  const v = e.target.value.trim();
+  minPrice = v === '' ? null : Number(v);
+  renderFeed();
+});
+document.getElementById('maxPriceInput').addEventListener('input', e => {
+  const v = e.target.value.trim();
+  maxPrice = v === '' ? null : Number(v);
+  renderFeed();
+});
+
 function renderFeed(){
   let list = activeCat === 'all' ? posts : posts.filter(p => p.cat === activeCat);
   const summaryEl = document.getElementById('searchResultsSummary');
@@ -795,6 +848,14 @@ function renderFeed(){
   } else {
     summaryEl.style.display = 'none';
   }
+
+  if(minPrice != null) list = list.filter(p => parsePriceNum(p.price) >= minPrice);
+  if(maxPrice != null) list = list.filter(p => parsePriceNum(p.price) <= maxPrice);
+
+  if(sortMode === 'price-asc') list = [...list].sort((a,b) => parsePriceNum(a.price) - parsePriceNum(b.price));
+  else if(sortMode === 'price-desc') list = [...list].sort((a,b) => parsePriceNum(b.price) - parsePriceNum(a.price));
+  else if(sortMode === 'rating') list = [...list].sort((a,b) => (parseFloat(b.rating) || 0) - (parseFloat(a.rating) || 0));
+
   gigGrid.innerHTML = list.length ? list.map(cardHTML).join('') : '<p style="color:var(--sage);">No gigs match your search.</p>';
 }
 
@@ -1885,11 +1946,19 @@ function openSellerProfile(sellerName, sellerBio, sellerAvatarUrl, sellerSkills,
     ? sellerGigs.map(cardHTML).join('')
     : '<p style="color:var(--sage);">No gigs from this seller yet.</p>';
 
-  document.getElementById('sellerRatingBadge').textContent = '';
+  const statsRow = document.getElementById('sellerStatsRow');
+  statsRow.innerHTML = `
+    <div class="stat-box"><b>${sellerGigs.length}</b><span>Gig${sellerGigs.length === 1 ? '' : 's'} listed</span></div>
+    <div class="stat-box"><b id="sellerAvgRating">—</b><span>Avg rating</span></div>
+    <div class="stat-box"><b id="sellerReviewCount">0</b><span>Review${sellerGigs.length === 1 ? '' : 's'}</span></div>
+  `;
   sbSelect('ratings', 'seller_name=eq.' + encodeURIComponent(sellerName) + '&select=stars').then(({ data }) => {
     if(data && data.length){
       const avg = (data.reduce((sum, r) => sum + r.stars, 0) / data.length).toFixed(1);
-      document.getElementById('sellerRatingBadge').textContent = `★ ${avg} · ${data.length} rating${data.length === 1 ? '' : 's'}`;
+      const avgEl = document.getElementById('sellerAvgRating');
+      const countEl = document.getElementById('sellerReviewCount');
+      if(avgEl) avgEl.textContent = '★ ' + avg;
+      if(countEl) countEl.textContent = data.length;
     }
   });
 
@@ -2295,8 +2364,10 @@ async function refreshSellerRatingAverage(sellerName){
   renderFeed();
 
   if(currentSellerViewData && currentSellerViewData.name === sellerName){
-    const badge = document.getElementById('sellerRatingBadge');
-    if(badge) badge.textContent = `★ ${avg} · ${data.length} rating${data.length === 1 ? '' : 's'}`;
+    const avgEl = document.getElementById('sellerAvgRating');
+    const countEl = document.getElementById('sellerReviewCount');
+    if(avgEl) avgEl.textContent = '★ ' + avg;
+    if(countEl) countEl.textContent = data.length;
   }
   if(currentGigDetail && currentGigDetail.seller === sellerName){
     const el = document.getElementById('gigDetailRating');

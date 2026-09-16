@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Terms of Service — Gignary</title>
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="wrap top-simple">
+    <a class="logo" href="index.html">
+      <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#1F9D55" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#1F9D55" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#1F9D55"/></svg>
+      Gignary
+    </a>
+    <nav>
+      <button class="btn btn-ghost btn-sm" onclick="location.href='login.html'">Log in</button>
+      <button class="btn btn-primary btn-sm" onclick="location.href='signup.html'">Get started</button>
+    </nav>
+  </div>
+
+  <div class="wrap legal-content">
+    <a href="index.html" class="btn btn-ghost btn-sm" style="margin-bottom:24px;">← Back to home</a>
+    <h1>Terms of Service</h1>
+    <p class="legal-updated">Last updated: September 2026</p>
+
+    <p>These Terms of Service ("Terms") govern your access to and use of Gignary (the "Platform"). By creating an account or using Gignary, you agree to these Terms. If you do not agree, please do not use the Platform.</p>
+
+    <h2>1. What Gignary is</h2>
+    <p>Gignary is a marketplace that connects buyers looking for freelance services ("Buyers") with freelancers offering those services ("Sellers"). Gignary provides the platform for discovery, messaging, and order tracking — it is not a party to the actual service agreement between a Buyer and a Seller.</p>
+
+    <h2>2. Accounts</h2>
+    <p>You must provide accurate information when creating an account and are responsible for keeping your login credentials secure. You must be legally able to enter into agreements to use Gignary.</p>
+
+    <h2>3. Orders and gigs</h2>
+    <p>Sellers list gigs describing the service they offer and its starting price. Buyers place orders directly with a Seller through the Platform. Order details, timelines, and deliverables should be agreed upon between the Buyer and Seller before or as part of placing an order.</p>
+
+    <h2>4. Payments</h2>
+    <p>Any payment arrangement referenced on the Platform is between the Buyer and Seller. Gignary does not process, hold, or guarantee payments unless explicitly stated otherwise for a specific feature. Always confirm payment terms with the other party before proceeding.</p>
+
+    <h2>5. Conduct</h2>
+    <p>You agree not to use Gignary for fraud, harassment, impersonation, or to post content that is illegal, abusive, or infringes on someone else's rights. Buyers and Sellers can report accounts or gigs that violate these Terms using the in-app Report feature; our team reviews reports and may suspend or remove accounts found in violation.</p>
+
+    <h2>6. Content</h2>
+    <p>You retain ownership of the content (text, images, videos) you upload, but you grant Gignary a licence to display it on the Platform as needed to operate the service.</p>
+
+    <h2>7. Limitation of liability</h2>
+    <p>Gignary is provided "as is." We do our best to keep the Platform reliable and safe, but we do not guarantee the quality, legality, or outcome of any gig or order arranged between a Buyer and Seller. To the fullest extent permitted by law, Gignary is not liable for disputes, losses, or damages arising from transactions between users.</p>
+
+    <h2>8. Changes to these Terms</h2>
+    <p>We may update these Terms from time to time. Continued use of the Platform after changes means you accept the updated Terms.</p>
+
+    <h2>9. Contact</h2>
+    <p>Questions about these Terms can be sent to <a class="inline-link" href="mailto:hello@gignary.com">hello@gignary.com</a>.</p>
+  </div>
+
+  <footer>
+    <div class="wrap">
+      <div class="foot-row">
+        <a class="logo" style="color:#fff;" href="index.html">
+          <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#33C46D" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#33C46D" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#33C46D"/></svg>
+          Gignary
+        </a>
+        <div style="display:flex; gap:24px; flex-wrap:wrap;">
+          <a href="terms.html">Terms</a>
+          <a href="privacy.html">Privacy Policy</a>
+          <a href="refund.html">Refund Policy</a>
+          <a href="mailto:hello@gignary.com">hello@gignary.com</a>
+        </div>
+      </div>
+      <div class="foot-bottom">© 2026 Gignary. All rights reserved.</div>
+    </div>
+  </footer>
+<div class="toast" id="toast"></div>
+<script src="shared.js"></script>
+<script>
+  const existing = loadSession();
+  if(existing && existing.user){ /* logged-in users can still read legal pages */ }
+</script>
+</body>
+</html>
