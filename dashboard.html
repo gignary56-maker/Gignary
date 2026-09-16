@@ -7,7 +7,6 @@
 <title>Dashboard — Gignary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -438,19 +437,19 @@
     <button class="modal-close" onclick="closeModal('reportUserModalBackdrop')">&times;</button>
     <div class="auth-head" style="margin-bottom:10px;">
       <h2 style="font-size:20px;">Team Gignary</h2>
-      <p>Yeh report seedha hamari team ke pass jaati hai — hum jald review karenge.</p>
+      <p>This report goes straight to our team — we'll review it shortly.</p>
     </div>
     <form id="reportUserForm">
       <div class="field">
-        <label for="reportUserName">Kis ko report karna hai</label>
-        <input type="text" id="reportUserName" required placeholder="Seller ya user ka naam likhein">
+        <label for="reportUserName">Who are you reporting</label>
+        <input type="text" id="reportUserName" required placeholder="Enter seller or user name">
       </div>
       <div class="field">
-        <label for="reportUserReason">Kya hua?</label>
+        <label for="reportUserReason">What happened?</label>
         <select id="reportUserReason" required>
-          <option value="">Reason chunein</option>
+          <option value="">Select a reason</option>
           <option value="Scam / Fraud">Scam / Fraud</option>
-          <option value="Kaam deliver nahi kiya">Kaam deliver nahi kiya</option>
+          <option value="Did not deliver work">Did not deliver work</option>
           <option value="Blackmail / Threat">Blackmail / Threat</option>
           <option value="Bad behavior / Abuse">Bad behavior / Abuse</option>
           <option value="Fake profile">Fake profile</option>
@@ -458,10 +457,10 @@
         </select>
       </div>
       <div class="field">
-        <label for="reportUserDetails">Tafseel likhein</label>
-        <textarea id="reportUserDetails" placeholder="Jo bhi hua, yahan detail me batayein..." rows="4"></textarea>
+        <label for="reportUserDetails">Add details</label>
+        <textarea id="reportUserDetails" placeholder="Describe what happened in detail..." rows="4"></textarea>
       </div>
-      <button type="submit" class="btn btn-primary btn-block">Report submit karein</button>
+      <button type="submit" class="btn btn-primary btn-block">Submit report</button>
     </form>
   </div>
 </div>
@@ -1465,7 +1464,7 @@ async function notifyUser(userId, text){
 }
 
 function openReportUserModal(){
-  if(!currentUser){ showToast('Report karne ke liye pehle login karein.', true); return; }
+  if(!currentUser){ showToast('Please log in to submit a report.', true); return; }
   document.getElementById('reportUserForm').reset();
   const prefill = (currentSellerViewData && currentSellerViewData.name) || '';
   document.getElementById('reportUserName').value = prefill;
@@ -1474,12 +1473,12 @@ function openReportUserModal(){
 
 document.getElementById('reportUserForm').addEventListener('submit', async e => {
   e.preventDefault();
-  if(!currentUser){ showToast('Report karne ke liye pehle login karein.', true); return; }
+  if(!currentUser){ showToast('Please log in to submit a report.', true); return; }
   const reportedName = document.getElementById('reportUserName').value.trim();
   const reason = document.getElementById('reportUserReason').value;
   const details = document.getElementById('reportUserDetails').value.trim();
-  if(!reportedName){ showToast('Kis ko report karna hai, yeh likhna zaroori hai.', true); return; }
-  if(!reason){ showToast('Reason chunna zaroori hai.', true); return; }
+  if(!reportedName){ showToast('Please enter who you are reporting.', true); return; }
+  if(!reason){ showToast('Please select a reason.', true); return; }
 
   const btn = e.target.querySelector('button[type=submit]');
   const originalLabel = btn.textContent;
@@ -1497,19 +1496,19 @@ document.getElementById('reportUserForm').addEventListener('submit', async e => 
   });
 
   btn.disabled = false; btn.textContent = originalLabel;
-  if(error){ showToast('Report submit nahi ho saki: ' + errMsg(error), true); return; }
+  if(error){ showToast('Could not submit report: ' + errMsg(error), true); return; }
 
   closeModal('reportUserModalBackdrop');
-  showToast('Aapki report submit ho gayi — Team Gignary jald review karegi.');
-  notifyUser(currentUser.id, `Aapki report "${reportedName}" ke khilaf submit ho gayi hai. Team Gignary jald review karegi.`);
+  showToast('Your report has been submitted — Team Gignary will review it shortly.');
+  notifyUser(currentUser.id, `Your report against "${reportedName}" has been submitted. Team Gignary will review it shortly.`);
   refreshAdminReportsBadge();
 });
 
 async function loadAdminReports(){
   const el = document.getElementById('adminReportsList');
   const { data, error } = await sbSelect('reports', 'select=*&order=created_at.desc');
-  if(error){ el.innerHTML = `<p style="color:var(--sage);">Reports load nahi hue: ${errMsg(error)}</p>`; return; }
-  if(!data || !data.length){ el.innerHTML = '<p style="color:var(--sage);">Abhi tak koi report nahi hai.</p>'; return; }
+  if(error){ el.innerHTML = `<p style="color:var(--sage);">Could not load reports: ${errMsg(error)}</p>`; return; }
+  if(!data || !data.length){ el.innerHTML = '<p style="color:var(--sage);">No reports yet.</p>'; return; }
   el.innerHTML = data.map(r => {
     const target = r.reported_name || (r.post_id ? 'Gig #' + r.post_id : 'Report');
     const isAccepted = r.status === 'accepted';
@@ -1528,12 +1527,12 @@ async function loadAdminReports(){
 }
 
 async function acceptReport(id, targetName, reporterId){
-  if(!confirm('Is report ko accepted mark karna hai?')) return;
+  if(!confirm('Mark this report as accepted?')) return;
   const { error } = await sbUpdate('reports', id, { status: 'accepted' });
-  if(error){ showToast('Status update nahi ho saka: ' + errMsg(error), true); return; }
-  showToast('Report accepted mark ho gayi.');
+  if(error){ showToast('Could not update status: ' + errMsg(error), true); return; }
+  showToast('Report marked as accepted.');
   if(reporterId){
-    notifyUser(reporterId, `Aapki report "${targetName}" ke khilaf review kar li gayi hai aur accept ho gayi hai. Shukriya Gignary istemaal karne ke liye.`);
+    notifyUser(reporterId, `Your report against "${targetName}" has been reviewed and accepted. Thank you for using Gignary.`);
   }
   loadAdminReports();
   refreshAdminReportsBadge();
