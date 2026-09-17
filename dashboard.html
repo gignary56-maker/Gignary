@@ -89,7 +89,7 @@
       <p id="searchResultsSummary" style="display:none; color:var(--sage); font-size:14px; margin:-6px 0 14px;"></p>
       <div class="filter-bar">
         <div class="filter-group">
-          <label for="sortSelect">Sort by</label>
+          <label for="sortSelect">↕ Sort by</label>
           <select id="sortSelect">
             <option value="newest">Newest</option>
             <option value="price-asc">Price: Low to High</option>
@@ -97,15 +97,15 @@
             <option value="rating">Highest rated</option>
           </select>
         </div>
-        <div class="filter-group">
-          <label for="minPriceInput">Min price (PKR)</label>
-          <input type="number" id="minPriceInput" placeholder="0" min="0">
+        <div class="filter-group filter-group-range">
+          <label>💰 Price range (PKR)</label>
+          <div class="price-range-inputs">
+            <input type="number" id="minPriceInput" placeholder="Min" min="0">
+            <span class="price-range-dash">–</span>
+            <input type="number" id="maxPriceInput" placeholder="Max" min="0">
+          </div>
         </div>
-        <div class="filter-group">
-          <label for="maxPriceInput">Max price (PKR)</label>
-          <input type="number" id="maxPriceInput" placeholder="Any" min="0">
-        </div>
-        <button class="btn btn-ghost btn-sm" onclick="clearFilters()" style="align-self:flex-end;">Clear filters</button>
+        <button class="filter-clear-btn" onclick="clearFilters()">✕ Clear filters</button>
       </div>
       <div class="gig-grid" id="gigGrid"></div>
     </div>
