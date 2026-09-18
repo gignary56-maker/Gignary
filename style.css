@@ -416,7 +416,7 @@
     .testimonial-grid{grid-template-columns:1fr;}
   }
   @media (max-width:560px){
-    .gig-grid{grid-template-columns:1fr 1fr; gap:12px;}
+    .gig-grid{grid-template-columns:1fr; gap:12px;}
     .gig-card{font-size:13px;}
     .gig-body{padding:12px 14px 14px; gap:6px;}
     .gig-card h3{font-size:14.5px; line-height:1.25;}
