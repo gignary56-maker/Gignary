@@ -409,13 +409,18 @@
     .about-grid{grid-template-columns:1fr;}
     .gig-grid{grid-template-columns:1fr 1fr;}
     .topbar-inner{grid-template-columns:auto 1fr auto; padding:12px 18px;}
-    .profile-btn span{display:none;}
+    .profile-btn #topbarName{display:none;}
     .app-main{padding:24px 18px 60px;}
     .form-grid{grid-template-columns:1fr;}
     .trust-grid{grid-template-columns:1fr 1fr;}
     .testimonial-grid{grid-template-columns:1fr;}
   }
   @media (max-width:560px){
-    .gig-grid{grid-template-columns:1fr;}
+    .gig-grid{grid-template-columns:1fr 1fr; gap:12px;}
+    .gig-card{font-size:13px;}
+    .topbar-inner{gap:8px; padding:10px 12px;}
+    .logo .logo-text{display:none;}
+    .profile-btn{padding:6px;}
+    .topbar-search input{padding:9px 12px 9px 36px; font-size:13px;}
   }
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
