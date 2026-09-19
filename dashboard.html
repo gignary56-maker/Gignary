@@ -174,11 +174,11 @@
         </div>
         <div class="settings-row">
           <div><span>Email</span><small id="settingsEmail">you@example.com</small></div>
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Email editing coming soon.')">Edit</button>
+          <button class="btn btn-ghost btn-sm" onclick="openChangeEmailModal()">Edit</button>
         </div>
         <div class="settings-row">
-          <div><span>Password</span><small>Last changed: never</small></div>
-          <button class="btn btn-ghost btn-sm" onclick="showToast('Password change coming soon.')">Change</button>
+          <div><span>Phone number</span><small id="settingsPhone">Not added</small></div>
+          <button class="btn btn-ghost btn-sm" id="phoneEditBtn" onclick="openAddPhoneModal()">Add</button>
         </div>
         <div class="settings-actions">
           <button class="btn btn-danger" onclick="logout()">Log out</button>
@@ -489,6 +489,42 @@
   </div>
 </div>
 
+<!-- ================= CHANGE EMAIL MODAL ================= -->
+<div class="modal-backdrop" id="changeEmailModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('changeEmailModalBackdrop')">&times;</button>
+    <div class="auth-head" style="margin-bottom:10px;">
+      <h2 style="font-size:20px;">Change email</h2>
+      <p>We'll send a confirmation link to your new email address.</p>
+    </div>
+    <form id="changeEmailForm">
+      <div class="field">
+        <label for="newEmailInput">New email</label>
+        <input type="email" id="newEmailInput" required placeholder="you@example.com">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Send confirmation</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= ADD PHONE MODAL ================= -->
+<div class="modal-backdrop" id="addPhoneModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('addPhoneModalBackdrop')">&times;</button>
+    <div class="auth-head" style="margin-bottom:10px;">
+      <h2 style="font-size:20px;">Phone number</h2>
+      <p>Used for WhatsApp order updates and account contact.</p>
+    </div>
+    <form id="addPhoneForm">
+      <div class="field">
+        <label for="phoneNumberInput">Phone number</label>
+        <input type="tel" id="phoneNumberInput" required placeholder="+92 3XX XXXXXXX">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block">Save number</button>
+    </form>
+  </div>
+</div>
+
 <!-- ================= ORDER MODAL ================= -->
 <div class="modal-backdrop" id="orderModalBackdrop">
   <div class="modal">
@@ -664,6 +700,13 @@ async function enterApp(){
   document.getElementById('topbarName').textContent = currentUser.name;
   renderAvatars();
   document.getElementById('settingsEmail').textContent = currentUser.email;
+  sbSelect('profiles', 'id=eq.' + currentUser.id + '&select=phone').then(({ data }) => {
+    const phone = data && data[0] && data[0].phone;
+    if(phone){
+      document.getElementById('settingsPhone').textContent = phone;
+      document.getElementById('phoneEditBtn').textContent = 'Edit';
+    }
+  });
   document.getElementById('adminMenuBtn').style.display = ADMIN_EMAILS.includes(currentUser.email) ? 'flex' : 'none';
   setSubView('dashboard');
   await loadPostsFromDB();
@@ -1526,6 +1569,60 @@ async function notifyUser(userId, text){
     if(error) console.error('Could not save notification:', errMsg(error));
   } catch(err){ console.error('Could not save notification:', err.message); }
 }
+
+/* ================= CHANGE EMAIL & PHONE NUMBER ================= */
+
+function openChangeEmailModal(){
+  document.getElementById('changeEmailForm').reset();
+  document.getElementById('newEmailInput').value = '';
+  document.getElementById('changeEmailModalBackdrop').classList.add('show');
+}
+
+document.getElementById('changeEmailForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const newEmail = document.getElementById('newEmailInput').value.trim();
+  if(!newEmail){ showToast('Please enter a new email.', true); return; }
+  if(newEmail.toLowerCase() === (currentUser.email || '').toLowerCase()){ showToast('That is already your current email.', true); return; }
+
+  const btn = e.target.querySelector('button[type=submit]');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Sending...';
+
+  const { error } = await sbUpdateUser({ email: newEmail });
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error){ showToast('Could not update email: ' + errMsg(error), true); return; }
+
+  closeModal('changeEmailModalBackdrop');
+  showToast(`Confirmation link sent to ${newEmail}. Click it to finish changing your email.`);
+});
+
+function openAddPhoneModal(){
+  document.getElementById('addPhoneForm').reset();
+  const current = document.getElementById('settingsPhone').textContent;
+  document.getElementById('phoneNumberInput').value = current && current !== 'Not added' ? current : '';
+  document.getElementById('addPhoneModalBackdrop').classList.add('show');
+}
+
+document.getElementById('addPhoneForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const phone = document.getElementById('phoneNumberInput').value.trim();
+  if(!phone){ showToast('Please enter a phone number.', true); return; }
+
+  const btn = e.target.querySelector('button[type=submit]');
+  const originalLabel = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Saving...';
+
+  const { error } = await sbUpdate('profiles', currentUser.id, { phone });
+
+  btn.disabled = false; btn.textContent = originalLabel;
+  if(error){ showToast('Could not save phone number: ' + errMsg(error), true); return; }
+
+  document.getElementById('settingsPhone').textContent = phone;
+  document.getElementById('phoneEditBtn').textContent = 'Edit';
+  closeModal('addPhoneModalBackdrop');
+  showToast('Phone number saved.');
+});
 
 function openReportUserModal(){
   if(!currentUser){ showToast('Please log in to submit a report.', true); return; }

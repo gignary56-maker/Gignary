@@ -127,6 +127,23 @@ async function sbSignIn(email, password){
 }
 function sbSignOut(){ accessToken = null; refreshTokenValue = null; tokenExpiresAt = 0; }
 
+/* Updates the logged-in user's own auth record (email and/or password) via Supabase Auth.
+   Changing email triggers Supabase to send a confirmation link to the new address. */
+async function sbUpdateUser(patch){
+  try{
+    const res = await fetchWithTimeout(SUPABASE_URL + '/auth/v1/user', {
+      method: 'PUT',
+      headers: { 'Content-Type':'application/json', 'apikey': SUPABASE_KEY, 'Authorization': 'Bearer ' + accessToken },
+      body: JSON.stringify(patch)
+    });
+    const json = await res.json().catch(()=>({}));
+    if(!res.ok) return { error: json };
+    return { data: json };
+  } catch(err){
+    return { error: { message: err.message } };
+  }
+}
+
 function signInWithGoogle(){
   const redirectTo = window.location.origin + '/dashboard.html';
   window.location.href = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);
