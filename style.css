@@ -4,8 +4,8 @@
     --bg-soft-2:#F5FBF7;
     --forest:#0B3D2E;
     --ink:#122019;
-    --green:#1F9D55;
-    --green-dark:#167A43;
+    --green:#167A43;
+    --green-dark:#125F35;
     --green-bright:#33C46D;
     --sage:#4F6B5C;
     --line:#DCEEE3;
@@ -78,7 +78,7 @@
   .foot-row{display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;}
   footer a{text-decoration:none; color:rgba(255,255,255,0.75); font-size:14px;}
   footer a:hover{color:#fff;}
-  .foot-bottom{font-size:13px; color:rgba(255,255,255,0.5); margin-top:20px;}
+  .foot-bottom{font-size:13px; color:rgba(255,255,255,0.65); margin-top:20px;}
 
   /* ============ AUTH VIEWS ============ */
   .auth-view{min-height:100vh; display:flex; align-items:center; justify-content:center; background:var(--bg-soft-2); padding:40px 20px;}
@@ -369,7 +369,7 @@
   .testimonials{padding:64px 0; background:var(--bg-soft-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
   .testimonial-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:36px;}
   .testimonial-card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px; display:flex; flex-direction:column; gap:14px;}
-  .testimonial-stars{color:#F5A524; font-size:14px; letter-spacing:2px;}
+  .testimonial-stars{color:#8A6300; font-size:14px; letter-spacing:2px;}
   .testimonial-card p{font-size:14.5px; color:#33463D; line-height:1.6; margin:0; flex:1;}
   .testimonial-person{display:flex; align-items:center; gap:12px;}
   .testimonial-avatar{width:38px; height:38px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;}
