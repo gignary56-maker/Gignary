@@ -144,23 +144,6 @@ async function sbUpdateUser(patch){
   }
 }
 
-/* Sends a password-reset email. The link in that email opens reset.html. */
-async function sbResetPassword(email){
-  try{
-    const redirectTo = window.location.origin + '/reset.html';
-    const res = await fetchWithTimeout(SUPABASE_URL + '/auth/v1/recover?redirect_to=' + encodeURIComponent(redirectTo), {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json', 'apikey': SUPABASE_KEY },
-      body: JSON.stringify({ email })
-    });
-    const json = await res.json().catch(()=>({}));
-    if(!res.ok) return { error: json };
-    return { data: json };
-  } catch(err){
-    return { error: { message: err.message } };
-  }
-}
-
 function signInWithGoogle(){
   const redirectTo = window.location.origin + '/dashboard.html';
   window.location.href = SUPABASE_URL + '/auth/v1/authorize?provider=google&redirect_to=' + encodeURIComponent(redirectTo);

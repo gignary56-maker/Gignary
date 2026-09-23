@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="Log in to your Gignary account.">
 <style>:root{--bg:#FFFFFF;--bg-soft:#EAF7EF;--bg-soft-2:#F5FBF7;--forest:#0B3D2E;--ink:#122019;--green:#167A43;--green-dark:#125F35;--green-bright:#33C46D;--sage:#4F6B5C;--line:#DCEEE3;--line-strong:#BFDDCB;--white:#FFFFFF;--danger:#B4463A;--shadow:0 8px 30px rgba(11,61,46,.08);--shadow-lift:0 16px 40px rgba(11,61,46,.14);--radius:18px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -15,7 +14,7 @@ button{font-family:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
 img,svg,video{display:block;max-width:100%}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:999px;padding:11px 22px;font-size:14.5px;font-weight:600;cursor:pointer}
-.btn-primary{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(22,122,67,.3)}
+.btn-primary{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(31,157,85,.3)}
 .btn-ghost{background:transparent;color:var(--forest);border:1.5px solid var(--line-strong)}
 .btn-block{width:100%}
 .btn-sm{padding:8px 16px;font-size:13.5px}
@@ -43,7 +42,7 @@ img,svg,video{display:block;max-width:100%}
 <main class="auth-view" style="min-height:100vh;">
   <div class="auth-card">
     <a class="logo" href="#" style="justify-content:center;">
-      <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#167A43" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#167A43" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#167A43"/></svg>
+      <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#1F9D55" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#1F9D55" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#1F9D55"/></svg>
       Gignary
     </a>
     <div class="auth-head">
@@ -53,7 +52,6 @@ img,svg,video{display:block;max-width:100%}
     <form id="loginForm">
       <div class="field"><label for="liEmail">Email</label><input type="email" id="liEmail" required placeholder="you@example.com"></div>
       <div class="field"><label for="liPass">Password</label><input type="password" id="liPass" required placeholder="Your password"></div>
-      <div class="forgot-row"><a href="#" id="forgotLink">Forgot password?</a></div>
       <button type="submit" class="btn btn-primary btn-block">Log in</button>
     </form>
     <div class="auth-divider">or</div>
@@ -61,7 +59,7 @@ img,svg,video{display:block;max-width:100%}
       <svg width="18" height="18" viewBox="0 0 48 48"><path fill="#FFC107" d="M43.6 20.5H42V20H24v8h11.3C33.7 32.9 29.3 36 24 36c-6.6 0-12-5.4-12-12s5.4-12 12-12c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5 12.7 4.5 3.5 13.7 3.5 25S12.7 45.5 24 45.5 44.5 36.3 44.5 25c0-1.5-.2-3-.9-4.5z"/><path fill="#FF3D00" d="M6.3 14.7l6.6 4.8C14.6 15.9 18.9 13 24 13c3.1 0 5.9 1.2 8 3.1l5.7-5.7C34.5 6.5 29.5 4.5 24 4.5c-7.7 0-14.4 4.4-17.7 10.2z"/><path fill="#4CAF50" d="M24 45.5c5.4 0 10.3-1.8 14-4.9l-6.5-5.4c-2 1.4-4.6 2.3-7.5 2.3-5.3 0-9.7-3.1-11.3-7.6l-6.5 5C9.5 41 16.2 45.5 24 45.5z"/><path fill="#1976D2" d="M43.6 20.5H42V20H24v8h11.3c-.8 2.3-2.3 4.3-4.2 5.7l6.5 5.4C39.5 37.5 44.5 32 44.5 25c0-1.5-.2-3-.9-4.5z"/></svg>
       Continue with Google
     </button>
-    <p class="auth-switch">New to Gignary? <a href="signup.html">Create an account</a></p>
+    <p class="auth-switch">New to Gignary? <a onclick="location.href='signup.html'">Create an account</a></p>
     <p style="text-align:center; font-size:12px; color:var(--sage); margin-top:14px;">
       <a href="terms.html" style="color:var(--sage);">Terms</a> · <a href="privacy.html" style="color:var(--sage);">Privacy</a> · <a href="refund.html" style="color:var(--sage);">Refunds</a>
     </p>
@@ -99,15 +97,6 @@ img,svg,video{display:block;max-width:100%}
       btn.disabled = false; btn.textContent = originalLabel;
       showToast('Connection error while logging in: ' + err.message, true);
     }
-  });
-
-  document.getElementById('forgotLink').addEventListener('click', async e => {
-    e.preventDefault();
-    const email = document.getElementById('liEmail').value.trim();
-    if(!email){ showToast('Type your email above first, then click "Forgot password?".', true); return; }
-    const { error } = await sbResetPassword(email);
-    if(error){ showToast('Could not send reset email: ' + errMsg(error), true); return; }
-    showToast('If an account exists for ' + email + ', a password reset link is on its way.');
   });
 </script>
 </body>
