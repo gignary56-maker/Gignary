@@ -31,7 +31,7 @@
 
   .btn{display:inline-flex; align-items:center; justify-content:center; gap:8px; border:none; border-radius:999px; padding:11px 22px; font-size:14.5px; font-weight:600; cursor:pointer; transition:transform .15s ease, box-shadow .15s ease, background .15s ease;}
   .btn:focus-visible{outline:3px solid var(--green-bright); outline-offset:2px;}
-  .btn-primary{background:var(--green); color:#fff; box-shadow:0 6px 18px rgba(31,157,85,0.30);}
+  .btn-primary{background:var(--green); color:#fff; box-shadow:0 6px 18px rgba(22,122,67,0.30);}
   .btn-primary:hover{background:var(--green-dark); transform:translateY(-1px);}
   .btn-ghost{background:transparent; color:var(--forest); border:1.5px solid var(--line-strong);}
   .btn-ghost:hover{border-color:var(--green); color:var(--green-dark);}
@@ -89,7 +89,7 @@
   .field{display:flex; flex-direction:column; gap:7px; margin-bottom:16px;}
   .field label{font-size:13px; font-weight:600; color:var(--forest);}
   .field input, .field select, .field textarea{border:1.5px solid var(--line-strong); border-radius:10px; padding:11px 13px; font-size:14.5px; font-family:inherit; color:var(--ink); background:#fcfefd; transition:border-color .15s; width:100%;}
-  .field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(31,157,85,0.14);}
+  .field input:focus, .field select:focus, .field textarea:focus{outline:none; border-color:var(--green); box-shadow:0 0 0 3px rgba(22,122,67,0.14);}
   .field textarea{resize:vertical; min-height:80px;}
   .auth-switch{text-align:center; font-size:14px; color:var(--sage); margin-top:20px;}
   .auth-divider{display:flex; align-items:center; gap:12px; margin:20px 0; color:var(--sage); font-size:13px;}
@@ -350,7 +350,7 @@
   .whatsapp-alt-link{display:block; text-align:center; margin-top:14px; font-size:13px; color:var(--green-dark); font-weight:600; text-decoration:none;}
   .whatsapp-alt-link:hover{text-decoration:underline;}
 
-  .whatsapp-fab{position:fixed; bottom:26px; right:26px; background:var(--green); color:#fff; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(31,157,85,0.4); z-index:60; text-decoration:none; transition:transform .15s;}
+  .whatsapp-fab{position:fixed; bottom:26px; right:26px; background:var(--green); color:#fff; width:56px; height:56px; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 10px 30px rgba(22,122,67,0.4); z-index:60; text-decoration:none; transition:transform .15s;}
   .whatsapp-fab:hover{transform:scale(1.08);}
 
   .toast{position:fixed; left:50%; bottom:26px; transform:translateX(-50%) translateY(20px); background:var(--forest); color:#fff; padding:14px 22px; border-radius:12px; font-size:14px; line-height:1.5; box-shadow:var(--shadow-lift); opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease; z-index:300; max-width:92vw; width:420px; text-align:left;}
@@ -434,3 +434,29 @@
     .topbar-search input{padding:9px 12px 9px 36px; font-size:13px;}
   }
   @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
+
+
+  /* ===== Added: guides, categories, live gigs, FAQ, forgot-password, focus ===== */
+  .journeys{padding:64px 0}
+  .journey-grid{display:grid; grid-template-columns:1fr 1fr; gap:26px; margin-top:36px;}
+  .journey{background:var(--bg-soft-2); border:1px solid var(--line); border-radius:16px; padding:28px;}
+  .journey h3{font-size:20px; margin-bottom:14px;}
+  .journey ol{margin:0; padding-left:20px; display:grid; gap:10px; font-size:14.5px; line-height:1.6; color:#33463D;}
+  .journey-link{margin:24px 0 0; font-size:14.5px;}
+  .cats{padding:64px 0; background:var(--bg-soft-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
+  .cat-grid{display:flex; flex-wrap:wrap; gap:12px; margin-top:28px;}
+  .cat-link{background:#fff; border:1.5px solid var(--line-strong); border-radius:999px; padding:10px 20px; font-size:14.5px; font-weight:600; color:var(--forest); text-decoration:none;}
+  .cat-link:hover{border-color:var(--green); color:var(--green-dark);}
+  .live-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:18px; margin-top:20px;}
+  .live-card{display:flex; flex-direction:column; gap:6px; background:#fff; border:1px solid var(--line); border-radius:16px; padding:20px; text-decoration:none;}
+  .live-card b{font-size:15.5px; color:var(--forest);}
+  .live-cat{font-size:12.5px; font-weight:600; color:var(--green-dark);}
+  .live-meta{font-size:13px; color:var(--sage);}
+  .faq details{border-bottom:1px solid var(--line); padding:16px 0;}
+  .faq summary{cursor:pointer; font-weight:600; color:var(--forest); font-size:15.5px;}
+  .faq details p{margin:10px 0 0;}
+  .forgot-row{text-align:right; margin:-6px 0 16px; font-size:13px;}
+  .forgot-row a{color:var(--green-dark); font-weight:600;}
+  .legal-content ol{padding-left:20px; margin:0 0 16px;}
+  a:focus-visible, button:focus-visible, summary:focus-visible{outline:2px solid var(--green); outline-offset:2px;}
+  @media (max-width:880px){ .journey-grid, .live-grid{grid-template-columns:1fr;} }

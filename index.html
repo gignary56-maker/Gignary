@@ -4,6 +4,11 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
+<meta name="description" content="Gignary connects buyers with freelancers for design, writing, marketing and more. Post a gig, place your order and track it from start to finish.">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Gignary">
+<meta property="og:title" content="Gignary — Hire freelancers, track every gig">
+<meta property="og:description" content="Gignary connects buyers with freelancers for design, writing, marketing and more. Post a gig, place your order and track it from start to finish.">
 <style>:root{--bg:#FFFFFF;--bg-soft:#EAF7EF;--bg-soft-2:#F5FBF7;--forest:#0B3D2E;--ink:#122019;--green:#167A43;--green-dark:#125F35;--green-bright:#33C46D;--sage:#4F6B5C;--line:#DCEEE3;--line-strong:#BFDDCB;--white:#FFFFFF;--danger:#B4463A;--shadow:0 8px 30px rgba(11,61,46,.08);--shadow-lift:0 16px 40px rgba(11,61,46,.14);--radius:18px}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth}
@@ -14,7 +19,7 @@ button{font-family:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
 img,svg,video{display:block;max-width:100%}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:999px;padding:11px 22px;font-size:14.5px;font-weight:600;cursor:pointer}
-.btn-primary{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(31,157,85,.3)}
+.btn-primary{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(22,122,67,.3)}
 .btn-ghost{background:transparent;color:var(--forest);border:1.5px solid var(--line-strong)}
 .btn-block{width:100%}
 .btn-sm{padding:8px 16px;font-size:13.5px}
@@ -41,7 +46,7 @@ img,svg,video{display:block;max-width:100%}
 <body>
   <header class="wrap top-simple">
     <a class="logo" href="#">
-      <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#1F9D55" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#1F9D55" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#1F9D55"/></svg>
+      <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#167A43" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#167A43" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#167A43"/></svg>
       Gignary
     </a>
     <nav>
@@ -65,7 +70,7 @@ img,svg,video{display:block;max-width:100%}
       <svg viewBox="0 0 420 420" fill="none">
         <circle cx="210" cy="210" r="190" stroke="#DCEEE3" stroke-width="1.5"/>
         <circle cx="210" cy="210" r="150" stroke="#BFDDCB" stroke-width="1.5"/>
-        <circle cx="210" cy="210" r="150" stroke="#1F9D55" stroke-width="6" stroke-linecap="round" stroke-dasharray="943" stroke-dashoffset="330" transform="rotate(-90 210 210)"/>
+        <circle cx="210" cy="210" r="150" stroke="#167A43" stroke-width="6" stroke-linecap="round" stroke-dasharray="943" stroke-dashoffset="330" transform="rotate(-90 210 210)"/>
         <circle cx="210" cy="210" r="108" stroke="#EAF7EF" stroke-width="24"/>
         <circle cx="210" cy="210" r="66" fill="#0B3D2E"/>
         <text x="210" y="203" text-anchor="middle" fill="#fff" font-family="Fraunces, serif" font-size="15" font-weight="600">Gig</text>
@@ -104,19 +109,78 @@ img,svg,video{display:block;max-width:100%}
     </div>
   </div>
 
+  <!-- HOW IT WORKS -->
+  <div class="journeys">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">How it works</span>
+        <h2>Two sides, one clear process</h2>
+        <p>Whether you're hiring or selling, here is exactly what happens.</p>
+      </div>
+      <div class="journey-grid">
+        <div class="journey">
+          <h3>If you're a buyer</h3>
+          <ol>
+            <li>Browse gigs or post a request with your budget.</li>
+            <li>Message the seller and confirm the details.</li>
+            <li>Place your order and pay using the method shown.</li>
+            <li>Our team verifies your payment, then the seller starts.</li>
+            <li>Track your order and chat with the seller until delivery.</li>
+          </ol>
+        </div>
+        <div class="journey">
+          <h3>If you're a seller</h3>
+          <ol>
+            <li>Create your profile and post a gig with a photo or video.</li>
+            <li>Answer buyer messages and agree on the scope.</li>
+            <li>Receive orders once the buyer's payment is verified.</li>
+            <li>Deliver the work and keep the buyer updated in chat.</li>
+          </ol>
+        </div>
+      </div>
+      <p class="journey-link"><a href="how-it-works.html" style="color:var(--green-dark); font-weight:600;">Read the full buyer and seller guides</a></p>
+    </div>
+  </div>
+
+  <!-- CATEGORIES + LIVE GIGS -->
+  <div class="cats">
+    <div class="wrap">
+      <div class="section-head">
+        <span class="kicker">Categories</span>
+        <h2>Find the skill you need</h2>
+        <p>Pick a category to start browsing gigs.</p>
+      </div>
+      <div class="cat-grid">
+        <a class="cat-link" href="signup.html">Design</a>
+        <a class="cat-link" href="signup.html">Writing</a>
+        <a class="cat-link" href="signup.html">Marketing</a>
+        <a class="cat-link" href="signup.html">Development</a>
+        <a class="cat-link" href="signup.html">Video Editor</a>
+        <a class="cat-link" href="signup.html">UI/UX Designer</a>
+        <a class="cat-link" href="signup.html">Banner</a>
+        <a class="cat-link" href="signup.html">Thumbnail</a>
+        <a class="cat-link" href="signup.html">Logo</a>
+      </div>
+      <div id="liveGigs" hidden>
+        <h3 style="margin-top:44px; font-size:20px;">Latest gigs</h3>
+        <div class="live-grid"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- TRUST & SAFETY -->
   <div class="trust">
     <div class="wrap">
       <div class="section-head">
         <span class="kicker">Trust &amp; Safety</span>
         <h2>Built so you can hire with confidence</h2>
-        <p>Every order, message and payment on Gignary is tracked end to end — so nothing happens behind your back.</p>
+        <p>Every order and message on Gignary is tracked end to end, and our team verifies each payment before a seller starts — so nothing happens behind your back.</p>
       </div>
       <div class="trust-grid">
         <div class="trust-card">
           <div class="trust-icon">🔒</div>
           <h3>Secure order tracking</h3>
-          <p>Every order gets a tracking ID with visible status updates, from placed to delivered.</p>
+          <p>Every order gets a tracking ID with visible status updates, from placed to delivered. Payments are checked by our team before work begins.</p>
         </div>
         <div class="trust-card">
           <div class="trust-icon">💬</div>
@@ -131,44 +195,7 @@ img,svg,video{display:block;max-width:100%}
         <div class="trust-card">
           <div class="trust-icon">🛡️</div>
           <h3>Human support</h3>
-          <p>Real people review disputes and reports — not just an automated ticket queue.</p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- TESTIMONIALS -->
-  <div class="testimonials">
-    <div class="wrap">
-      <div class="section-head">
-        <span class="kicker">What people say</span>
-        <h2>Loved by buyers and sellers</h2>
-        <p>A few words from people who've hired and been hired on Gignary.</p>
-      </div>
-      <div class="testimonial-grid">
-        <div class="testimonial-card">
-          <div class="testimonial-stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
-          <p>"I posted what I needed and had three sellers messaging me within an hour. Tracking the order start to finish made the whole thing feel safe."</p>
-          <div class="testimonial-person">
-            <div class="testimonial-avatar">H</div>
-            <div><b>Hamza R.</b><span>Buyer · Logo design</span></div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
-          <p>"As a seller, I like that buyers can see exactly where their order stands. Fewer 'is it done yet?' messages, more actual work."</p>
-          <div class="testimonial-person">
-            <div class="testimonial-avatar">S</div>
-            <div><b>Sara K.</b><span>Seller · Content writing</span></div>
-          </div>
-        </div>
-        <div class="testimonial-card">
-          <div class="testimonial-stars" role="img" aria-label="5 out of 5 stars">★★★★★</div>
-          <p>"Simple, no bidding wars, no confusing dashboard. I knew exactly what I was paying for before I ordered."</p>
-          <div class="testimonial-person">
-            <div class="testimonial-avatar">A</div>
-            <div><b>Ayesha N.</b><span>Buyer · Social media marketing</span></div>
-          </div>
+          <p>Real people review disputes and reports — not just an automated ticket queue. <a href="refund.html#disputes" style="color:var(--green-dark); font-weight:600;">See how disputes work</a></p>
         </div>
       </div>
     </div>
@@ -189,6 +216,9 @@ img,svg,video{display:block;max-width:100%}
           Gignary
         </a>
         <div style="display:flex; gap:24px; flex-wrap:wrap;">
+          <a href="how-it-works.html">Guides</a>
+          <a href="faq.html">FAQ</a>
+          <a href="support.html">Support</a>
           <a href="terms.html">Terms</a>
           <a href="privacy.html">Privacy Policy</a>
           <a href="refund.html">Refund Policy</a>
@@ -203,6 +233,23 @@ img,svg,video{display:block;max-width:100%}
 <script>
   const existing = loadSession();
   if(existing && existing.user){ location.href = 'dashboard.html'; }
+
+  /* Shows the latest real gigs if they can be read; stays hidden otherwise. */
+  (async function(){
+    const box = document.getElementById('liveGigs');
+    if(!box) return;
+    const { data, error } = await sbSelect('posts', 'select=id,category,title,price,seller_name&order=created_at.desc&limit=6');
+    if(error || !data || !data.length) return;
+    const grid = box.querySelector('.live-grid');
+    data.forEach(g => {
+      const a = document.createElement('a'); a.className = 'live-card'; a.href = 'signup.html';
+      const c = document.createElement('span'); c.className = 'live-cat'; c.textContent = g.category || 'Gig';
+      const t = document.createElement('b'); t.textContent = g.title || '';
+      const s = document.createElement('span'); s.className = 'live-meta'; s.textContent = (g.seller_name || 'Seller') + (g.price ? ' — ' + g.price : '');
+      a.append(c, t, s); grid.appendChild(a);
+    });
+    box.hidden = false;
+  })();
 </script>
 </body>
 </html>

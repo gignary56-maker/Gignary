@@ -14,7 +14,7 @@ button{font-family:inherit}
 .wrap{max-width:1180px;margin:0 auto;padding:0 32px}
 img,svg,video{display:block;max-width:100%}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;border:none;border-radius:999px;padding:11px 22px;font-size:14.5px;font-weight:600;cursor:pointer}
-.btn-primary{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(31,157,85,.3)}
+.btn-primary{background:var(--green);color:#fff;box-shadow:0 6px 18px rgba(22,122,67,.3)}
 .btn-ghost{background:transparent;color:var(--forest);border:1.5px solid var(--line-strong)}
 .btn-block{width:100%}
 .btn-sm{padding:8px 16px;font-size:13.5px}
@@ -43,7 +43,7 @@ img,svg,video{display:block;max-width:100%}
   <header class="topbar">
     <div class="topbar-inner">
       <a class="logo" href="#" onclick="setSubView('dashboard'); return false;">
-        <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#1F9D55" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#1F9D55" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#1F9D55"/></svg>
+        <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#167A43" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#167A43" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#167A43"/></svg>
         <span class="logo-text">Gignary</span>
       </a>
       <div class="topbar-search">
@@ -2160,7 +2160,7 @@ function buildRingSVG(svgEl, stageIndex){
     const filled = i <= stageIndex;
     const c = 2*Math.PI*r;
     s += `<circle cx="75" cy="75" r="${r}" fill="none" stroke="#DCEEE3" stroke-width="8"/>`;
-    if(filled) s += `<circle cx="75" cy="75" r="${r}" fill="none" stroke="#1F9D55" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*0.08}" transform="rotate(-90 75 75)"/>`;
+    if(filled) s += `<circle cx="75" cy="75" r="${r}" fill="none" stroke="#167A43" stroke-width="8" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${c*0.08}" transform="rotate(-90 75 75)"/>`;
   });
   s += `<text x="75" y="80" text-anchor="middle" fill="#0B3D2E" font-family="IBM Plex Mono, monospace" font-size="13" font-weight="600">${stageIndex+1}/4</text>`;
   svgEl.innerHTML = s;
