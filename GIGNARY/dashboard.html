@@ -7,8 +7,15 @@
 <title>Dashboard — Gignary</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+<script>
+  // Loaded via JS so the browser never treats the font CSS as a render-blocking request.
+  (function(){
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
+    document.head.appendChild(l);
+  })();
+</script>
 <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="stylesheet" href="style.css">
@@ -166,11 +173,11 @@
       <div class="settings-card">
         <div class="settings-row">
           <div><span>Notifications</span><small>Get notified about orders, messages and status changes</small></div>
-          <button class="toggle on" id="toggleNotif" onclick="toggleNotifications(this)"></button>
+          <button class="toggle on" id="toggleNotif" onclick="toggleNotifications(this)" aria-label="Toggle notifications" aria-pressed="true"></button>
         </div>
         <div class="settings-row">
           <div><span>WhatsApp updates</span><small>Receive updates on your WhatsApp number</small></div>
-          <button class="toggle on" id="toggleWa" onclick="this.classList.toggle('on')"></button>
+          <button class="toggle on" id="toggleWa" onclick="this.classList.toggle('on'); this.setAttribute('aria-pressed', this.classList.contains('on'));" aria-label="Toggle WhatsApp updates" aria-pressed="true"></button>
         </div>
         <div class="settings-row">
           <div><span>Email</span><small id="settingsEmail">you@example.com</small></div>
@@ -595,7 +602,7 @@
           <li>If your order is running late, just message the seller directly in Conversation to check in.</li>
         </ol>
         <p style="font-size:13px; color:var(--sage); line-height:1.6; margin:0;">
-          🔒 <b>You're fully protected.</b> Gignary is a safe, secure platform. If a seller misbehaves, doesn't deliver your order, or tries to blackmail you, report it immediately — our team will look into it and <b>refund your payment</b> if the seller is at fault.
+          🔒 <b>Your payment is verified by our team.</b> Pay only to the account details shown above. If a seller doesn't deliver, delivers work very different from what was agreed, or behaves badly, report it here — we'll review the case and <b>refund your payment</b> if the seller is at fault. See our <a href="refund.html" target="_blank" style="color:var(--sage);">Refund Policy</a>.
         </p>
         <button class="btn btn-ghost btn-sm" style="margin-top:12px;" onclick="reportOrderIssue()">🚩 Report a problem with this order</button>
       </div>
@@ -973,7 +980,7 @@ document.getElementById('reqMedia').addEventListener('change', e => {
   const url = URL.createObjectURL(file);
   const isVideo = file.type.startsWith('video');
   const preview = document.getElementById('reqFilePreview');
-  preview.innerHTML = isVideo ? `<video src="${url}" controls muted></video>` : `<img src="${url}">`;
+  preview.innerHTML = isVideo ? `<video src="${url}" controls muted></video>` : `<img src="${url}" alt="Uploaded preview">`;
   preview.classList.add('show');
   document.getElementById('reqFileDropText').textContent = '✓ ' + file.name;
 });
@@ -1754,7 +1761,7 @@ document.getElementById('addGigMedia').addEventListener('change', e => {
   addGigPendingMediaType = file.type.startsWith('video') ? 'video' : 'image';
   const url = URL.createObjectURL(file);
   const preview = document.getElementById('addGigMediaPreview');
-  preview.innerHTML = addGigPendingMediaType === 'video' ? `<video src="${url}" controls muted></video>` : `<img src="${url}">`;
+  preview.innerHTML = addGigPendingMediaType === 'video' ? `<video src="${url}" controls muted></video>` : `<img src="${url}" alt="Uploaded preview">`;
   preview.classList.add('show');
   document.getElementById('addGigMediaDropText').textContent = '✓ ' + file.name;
   document.getElementById('addGigCoverField').style.display = addGigPendingMediaType === 'video' ? 'block' : 'none';
@@ -2075,6 +2082,7 @@ let notifications = [];
 function toggleNotifications(btn){
   btn.classList.toggle('on');
   notificationsEnabled = btn.classList.contains('on');
+  btn.setAttribute('aria-pressed', notificationsEnabled);
 }
 
 function addNotification(text){

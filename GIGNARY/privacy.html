@@ -8,8 +8,15 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+<script>
+  // Loaded via JS so the browser never treats the font CSS as a render-blocking request.
+  (function(){
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
+    document.head.appendChild(l);
+  })();
+</script>
 <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -36,6 +43,9 @@
     <ul>
       <li><b>Account information:</b> name, email address, and password (stored securely, never in plain text) when you sign up.</li>
       <li><b>Profile information:</b> avatar, bio, skills, and language, if you choose to add them.</li>
+      <li><b>Payment information:</b> the payment method you used, and the receipt screenshot you upload so our team can verify your payment. Receipts may contain phone numbers or account details, so please hide anything unrelated to the payment.</li>
+      <li><b>Contact details:</b> any contact information you add to orders or requests so Buyers and Sellers can reach each other.</li>
+      <li><b>Sign-in data:</b> if you use "Continue with Google", we receive your name, email, and profile picture from Google.</li>
       <li><b>Activity data:</b> gigs you post, orders you place, messages you send through the Platform, and reports you submit.</li>
       <li><b>Technical data:</b> basic device and browser information used to keep the Platform secure and working properly.</li>
     </ul>
@@ -44,6 +54,7 @@
     <ul>
       <li>To create and manage your account and show your profile to other users where relevant.</li>
       <li>To let Buyers and Sellers find each other, message, and track orders.</li>
+      <li>To verify payments, process orders, and handle refunds and disputes.</li>
       <li>To review reports submitted through the Report feature and take appropriate action.</li>
       <li>To send you account-related notifications (such as order updates or report status).</li>
     </ul>
@@ -81,6 +92,9 @@
           <a href="terms.html">Terms</a>
           <a href="privacy.html">Privacy Policy</a>
           <a href="refund.html">Refund Policy</a>
+          <a href="buyer-guide.html">Buyer Guide</a>
+          <a href="seller-guide.html">Seller Guide</a>
+          <a href="faq.html">FAQ &amp; Support</a>
           <a href="mailto:hello@gignary.com">hello@gignary.com</a>
         </div>
       </div>

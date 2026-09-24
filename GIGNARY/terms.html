@@ -8,8 +8,15 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet" media="print" onload="this.media='all'; this.onload=null;">
+<script>
+  // Loaded via JS so the browser never treats the font CSS as a render-blocking request.
+  (function(){
+    var l = document.createElement('link');
+    l.rel = 'stylesheet';
+    l.href = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap';
+    document.head.appendChild(l);
+  })();
+</script>
 <noscript><link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet"></noscript>
 <link rel="stylesheet" href="style.css">
 </head>
@@ -42,7 +49,7 @@
     <p>Sellers list gigs describing the service they offer and its starting price. Buyers place orders directly with a Seller through the Platform. Order details, timelines, and deliverables should be agreed upon between the Buyer and Seller before or as part of placing an order.</p>
 
     <h2>4. Payments</h2>
-    <p>Any payment arrangement referenced on the Platform is between the Buyer and Seller. Gignary does not process, hold, or guarantee payments unless explicitly stated otherwise for a specific feature. Always confirm payment terms with the other party before proceeding.</p>
+    <p>Orders are paid to Gignary using the payment methods shown at checkout (currently JazzCash and Easypaisa). After paying, the Buyer uploads a payment receipt, and our team verifies it before the order is sent to the Seller. Gignary does not guarantee the quality or outcome of the work, but if the Seller fails to deliver or the work is substantially different from what was agreed, refunds are handled as described in our <a class="inline-link" href="refund.html">Refund Policy</a>. Do not pay a Seller outside the Platform; payments made outside Gignary are not verified or covered by our refund process.</p>
 
     <h2>5. Conduct</h2>
     <p>You agree not to use Gignary for fraud, harassment, impersonation, or to post content that is illegal, abusive, or infringes on someone else's rights. Buyers and Sellers can report accounts or gigs that violate these Terms using the in-app Report feature; our team reviews reports and may suspend or remove accounts found in violation.</p>
@@ -51,7 +58,7 @@
     <p>You retain ownership of the content (text, images, videos) you upload, but you grant Gignary a licence to display it on the Platform as needed to operate the service.</p>
 
     <h2>7. Limitation of liability</h2>
-    <p>Gignary is provided "as is." We do our best to keep the Platform reliable and safe, but we do not guarantee the quality, legality, or outcome of any gig or order arranged between a Buyer and Seller. To the fullest extent permitted by law, Gignary is not liable for disputes, losses, or damages arising from transactions between users.</p>
+    <p>Gignary is provided "as is." We do our best to keep the Platform reliable and safe, but we do not guarantee the quality, legality, or outcome of any gig or order arranged between a Buyer and Seller, beyond the refund process described in the Refund Policy. To the fullest extent permitted by law, Gignary is not liable for disputes, losses, or damages arising from transactions between users.</p>
 
     <h2>8. Changes to these Terms</h2>
     <p>We may update these Terms from time to time. Continued use of the Platform after changes means you accept the updated Terms.</p>
@@ -71,6 +78,9 @@
           <a href="terms.html">Terms</a>
           <a href="privacy.html">Privacy Policy</a>
           <a href="refund.html">Refund Policy</a>
+          <a href="buyer-guide.html">Buyer Guide</a>
+          <a href="seller-guide.html">Seller Guide</a>
+          <a href="faq.html">FAQ &amp; Support</a>
           <a href="mailto:hello@gignary.com">hello@gignary.com</a>
         </div>
       </div>

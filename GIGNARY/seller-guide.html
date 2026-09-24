@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Refund Policy — Gignary</title>
+<title>Seller Guide — Gignary</title>
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -34,45 +34,21 @@
 
   <main class="wrap legal-content">
     <a href="index.html" class="btn btn-ghost btn-sm" style="margin-bottom:24px;">← Back to home</a>
-    <h1>Refund Policy</h1>
-    <p class="legal-updated">Last updated: September 2026</p>
-
-    <p>This Refund Policy explains how refund requests are generally handled for orders placed through Gignary. Because each gig and order is unique, refunds are considered on a case-by-case basis. Payments for orders are made to Gignary and verified by our team, so refunds for eligible orders are handled by us.</p>
-
-    <h2>1. Before you order</h2>
-    <p>We encourage Buyers to message the Seller and confirm exactly what's included, the timeline, and the price before placing an order — this avoids most disputes.</p>
-
-    <h2>2. When a refund may apply</h2>
-    <ul>
-      <li>The Seller does not deliver the agreed work within a reasonable time and stops responding.</li>
-      <li>The delivered work is substantially different from what was agreed and the Seller is unwilling to revise it.</li>
-      <li>The order was placed in error (e.g. duplicate order) and no work has started yet.</li>
-    </ul>
-
-    <h2>3. When a refund typically does not apply</h2>
-    <ul>
-      <li>Work was delivered as agreed but the Buyer simply changed their mind.</li>
-      <li>The Buyer did not provide information or feedback needed for the Seller to complete the work.</li>
-      <li>Minor differences in style or interpretation that fall within what was reasonably agreed.</li>
-    </ul>
-
-    <h2>4. How to request a refund or raise a dispute</h2>
-    <p>Use the "Report a problem with this order" option from your Order status page, or the Report option from the profile menu, describing what happened. Our team reviews each case and will reach out with next steps.</p>
-
-    <h2>5. How a dispute is handled</h2>
-    <ol>
-      <li><b>You report it.</b> Submit a report describing the problem (and any evidence, such as chat messages).</li>
-      <li><b>We review.</b> Our team looks at the order, the conversation, and contacts the Seller for their side.</li>
-      <li><b>We decide.</b> If the Seller is found at fault under section 2, the Buyer is refunded. If the work was delivered as agreed, the order stands.</li>
-      <li><b>You're notified.</b> We update you on the outcome through the Platform or by email.</li>
-    </ol>
-    <p>Approved refunds are returned using the payment method the Buyer paid with, where possible.</p>
-
-    <h2>6. Timeline</h2>
-    <p>We aim to review refund and dispute reports promptly. Response times may vary depending on the complexity of the order.</p>
-
-    <h2>7. Contact</h2>
-    <p>For anything not covered here, reach out to <a class="inline-link" href="mailto:hello@gignary.com">hello@gignary.com</a>.</p>
+    <h1>Seller Guide</h1>
+    <p class="legal-updated">How to sell your work on Gignary</p>
+    <h2>1. Create your account and profile</h2>
+    <p>Sign up, then add your bio, skills and language so buyers know who you are.</p>
+    <h2>2. Post a gig</h2>
+    <p>Add a title, description, category, starting price and a photo or video showing your work.</p>
+    <h2>3. Answer buyer messages</h2>
+    <p>Buyers may message you in Conversation before ordering. Reply clearly and confirm scope, timeline and price.</p>
+    <h2>4. Receive verified orders</h2>
+    <p>Orders reach you in Conversation only after our team has verified the buyer's payment.</p>
+    <h2>5. Deliver as agreed</h2>
+    <p>Complete the work as agreed and keep communication in Conversation, so there is a record if a dispute comes up.</p>
+    <h2>6. Reports and disputes</h2>
+    <p>Buyers can report problems with an order. Our team reviews the conversation and may contact you for your side. Accounts that break the <a class="inline-link" href="terms.html">Terms</a> can be suspended.</p>
+    <p style="margin-top:28px;"><button class="btn btn-primary" onclick="location.href='signup.html'">Get started</button> <a class="btn btn-ghost" href="faq.html">Read the FAQ</a></p>
   </main>
 
   <footer>
@@ -97,5 +73,9 @@
   </footer>
 <div class="toast" id="toast"></div>
 <script src="shared.js"></script>
+<script>
+  const existing = loadSession();
+  if(existing && existing.user){ /* logged-in users can still read legal pages */ }
+</script>
 </body>
 </html>
