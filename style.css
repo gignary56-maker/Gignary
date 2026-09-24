@@ -46,15 +46,15 @@
   /* ============ WELCOME VIEW ============ */
   .top-simple{display:flex; align-items:center; justify-content:space-between; padding:24px 0;}
   .top-simple nav{display:flex; gap:14px;}
-  .hero{padding:64px 0 60px; display:grid; grid-template-columns:1.05fr 0.95fr; gap:56px; align-items:center;}
+  .hero{padding:64px 0 60px; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,0.95fr); gap:56px; align-items:center;}
   .eyebrow{display:inline-flex; align-items:center; gap:8px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; font-weight:500; color:var(--green-dark); background:var(--bg-soft); border:1px solid var(--line-strong); padding:6px 14px; border-radius:999px; margin-bottom:22px; text-transform:uppercase; letter-spacing:0.08em;}
   .eyebrow .dot{width:6px; height:6px; border-radius:50%; background:var(--green-bright);}
   .hero h1{font-size:clamp(36px, 4.4vw, 54px); line-height:1.08; font-weight:600;}
   .hero h1 em{font-style:italic; color:var(--green);}
   .hero p.lead{margin-top:20px; font-size:18px; line-height:1.6; color:var(--sage); max-width:480px;}
   .hero-cta{display:flex; gap:14px; margin-top:32px;}
-  .ring-hero{position:relative; display:flex; align-items:center; justify-content:center;}
-  .ring-hero svg{width:100%; max-width:400px;}
+  .ring-hero{position:relative; display:flex; align-items:center; justify-content:center; width:100%; max-width:400px; aspect-ratio:1/1; margin-inline:auto;}
+  .ring-hero svg{width:100%; height:100%; display:block;}
   .ring-hero .float-card{position:absolute; background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow-lift); padding:12px 16px; font-size:13px;}
   .float-card b{display:block; font-family:'Fraunces',serif; font-size:15px; color:var(--forest);}
   .float-1{top:4%; left:-4%;}
@@ -369,7 +369,7 @@
   .testimonials{padding:64px 0; background:var(--bg-soft-2); border-top:1px solid var(--line); border-bottom:1px solid var(--line);}
   .testimonial-grid{display:grid; grid-template-columns:repeat(3,1fr); gap:22px; margin-top:36px;}
   .testimonial-card{background:#fff; border:1px solid var(--line); border-radius:16px; padding:26px; display:flex; flex-direction:column; gap:14px;}
-  .testimonial-stars{color:#8A6300; font-size:14px; letter-spacing:2px;}
+  .testimonial-stars{color:#F5A524; font-size:14px; letter-spacing:2px;}
   .testimonial-card p{font-size:14.5px; color:#33463D; line-height:1.6; margin:0; flex:1;}
   .testimonial-person{display:flex; align-items:center; gap:12px;}
   .testimonial-avatar{width:38px; height:38px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:14px; flex-shrink:0;}
@@ -404,7 +404,7 @@
 
   @media (max-width: 880px){
     .wrap{padding:0 20px;}
-    .hero{grid-template-columns:1fr; padding-top:30px;}
+    .hero{grid-template-columns:minmax(0,1fr); padding-top:30px;}
     .ring-hero{order:-1; max-width:260px; margin:0 auto 20px;}
     .about-grid{grid-template-columns:1fr;}
     .gig-grid{grid-template-columns:1fr 1fr;}
