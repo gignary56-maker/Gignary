@@ -15,7 +15,7 @@ async function fetchWithTimeout(url, options, timeoutMs){
     return await fetch(url, Object.assign({}, options, { signal: controller.signal }));
   } catch(err){
     if(err.name === 'AbortError'){
-      throw new Error('Server took too long to respond. Your Supabase project may be paused, or check your internet connection.');
+      throw new Error('Request timed out. If you were uploading a file, it may be too large or your internet is slow. Otherwise your Supabase project may be paused.');
     }
     throw err;
   } finally {
@@ -81,8 +81,8 @@ async function ensureValidSession(){
 
 /* Does an authenticated fetch; if the server says the token expired (401),
    refreshes it once and retries automatically. */
-async function authFetchWithRefresh(url, method, headersExtra, body){
-  const doFetch = () => fetchWithTimeout(url, { method, headers: authHeaders(headersExtra), body });
+async function authFetchWithRefresh(url, method, headersExtra, body, timeoutMs){
+  const doFetch = () => fetchWithTimeout(url, { method, headers: authHeaders(headersExtra), body }, timeoutMs);
   let res = await doFetch();
   if(res.status === 401 && refreshTokenValue){
     if(await refreshAccessToken()) res = await doFetch();
@@ -209,7 +209,7 @@ async function sbUpdate(table, id, patch){
 async function sbUpload(path, file){
   const encodedPath = path.split('/').map(encodeURIComponent).join('/');
   try{
-    const res = await authFetchWithRefresh(SUPABASE_URL + '/storage/v1/object/gig-media/' + encodedPath, 'POST', { 'Content-Type': file.type || 'application/octet-stream' }, file);
+    const res = await authFetchWithRefresh(SUPABASE_URL + '/storage/v1/object/gig-media/' + encodedPath, 'POST', { 'Content-Type': file.type || 'application/octet-stream' }, file, 10 * 60 * 1000); // uploads get 10 min (videos are big)
     const json = await res.json().catch(()=>({}));
     if(!res.ok) return { error: json };
     return { data: json };
