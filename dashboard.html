@@ -2589,6 +2589,9 @@ document.getElementById('feedbackSendBtn').addEventListener('click', async () =>
     location.href = 'login.html';
     return;
   }
+  // Seller accounts have their own dashboard.
+  const { data: roleRows } = await sbSelect('profiles', 'id=eq.' + currentUser.id + '&select=role');
+  if(roleRows && roleRows[0] && roleRows[0].role === 'seller'){ location.href = 'seller.html'; return; }
   enterApp();
   // Keep the session fresh for long-open tabs so it never silently expires mid-use.
   setInterval(ensureValidSession, 5 * 60 * 1000);

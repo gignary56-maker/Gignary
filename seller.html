@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Seller dashboard — Gignary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,600;9..144,700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=optional">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="stylesheet" href="style.css">
+<style>
+  .topbar-center{justify-self:center; font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.08em; text-transform:uppercase; color:var(--green-dark); background:var(--bg-soft); border:1px solid var(--line-strong); padding:6px 14px; border-radius:999px; white-space:nowrap;}
+  .tab-badge{display:none; margin-left:6px; background:var(--danger); color:#fff; border-radius:10px; padding:1px 7px; font-size:11px; font-weight:700;}
+  .muted{color:var(--sage); font-size:14px; line-height:1.55;}
+  .summary-row{display:flex; gap:12px; flex-wrap:wrap; margin-bottom:20px;}
+  .order-card-new{border-left:4px solid var(--green);}
+  .order-card-done{opacity:.85;}
+  .state-pill{display:inline-block; font-family:'IBM Plex Mono',monospace; font-size:11px; font-weight:600; letter-spacing:.05em; text-transform:uppercase; padding:4px 10px; border-radius:999px; background:var(--bg-soft); color:var(--green-dark); border:1px solid var(--line-strong); white-space:nowrap;}
+  .state-pill.new{background:var(--green); color:#fff; border-color:var(--green);}
+  .info-note{background:var(--bg-soft); border:1px dashed var(--line-strong); border-radius:12px; padding:12px 14px; font-size:13px; color:var(--sage); line-height:1.55; margin-bottom:16px;}
+  .info-note b{color:var(--forest);}
+  .section-title{display:flex; justify-content:space-between; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:18px;}
+  .seller-gig-actions{display:flex; gap:8px; padding:0 20px 20px;}
+  .seller-gig-actions .btn{flex:1;}
+  .empty-box{background:#fff; border:1px dashed var(--line-strong); border-radius:16px; padding:34px 20px; text-align:center;}
+  .empty-box h4{font-family:'Fraunces',serif; color:var(--forest); margin:0 0 6px; font-size:17px;}
+  .profile-grid{display:grid; grid-template-columns:minmax(0,520px); gap:24px;}
+  .field input[readonly]{background:var(--bg-soft-2); color:var(--sage);}
+  .thread-time{float:right; font-size:11px; color:var(--sage); font-weight:400;}
+  .chat-rules{font-size:12px; color:var(--sage); margin:10px 0 0; line-height:1.5;}
+  .link-btn{background:none; border:none; color:var(--green-dark); font-weight:600; font-size:13px; cursor:pointer; padding:0; text-decoration:underline;}
+  #bootMsg{padding:80px 20px; text-align:center; color:var(--sage);}
+  @media (max-width:760px){ .seller-gig-actions{padding:0 14px 14px;} }
+</style>
+</head>
+<body>
+<p id="bootMsg">Loading your seller dashboard…</p>
+
+<div id="view-app" hidden>
+  <header class="topbar">
+    <div class="topbar-inner">
+      <a class="logo" href="#" onclick="showTab('orders'); return false;">
+        <svg class="logo-mark" viewBox="0 0 40 40" fill="none"><circle cx="20" cy="20" r="18" stroke="#1F9D55" stroke-width="2.4"/><circle cx="20" cy="20" r="11.5" stroke="#1F9D55" stroke-width="2.4" opacity="0.6"/><circle cx="20" cy="20" r="5" fill="#1F9D55"/></svg>
+        <span class="logo-text">Gignary</span>
+      </a>
+      <span class="topbar-center">Seller dashboard</span>
+      <div class="topbar-right">
+        <div class="notif-wrap">
+          <button class="notif-btn" id="notifBtn" aria-label="Notifications">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none"><path d="M12 3a5 5 0 0 0-5 5v3.2c0 .5-.2 1-.5 1.4L5 14.5c-.6.7-.1 1.8.8 1.8h12.4c.9 0 1.4-1.1.8-1.8l-1.5-2c-.3-.4-.5-.9-.5-1.4V8a5 5 0 0 0-5-5z" stroke="#0B3D2E" stroke-width="1.7" stroke-linejoin="round"/><path d="M9.5 19a2.5 2.5 0 0 0 5 0" stroke="#0B3D2E" stroke-width="1.7" stroke-linecap="round"/></svg>
+            <span class="notif-dot" id="notifDot" style="display:none;"></span>
+          </button>
+          <div class="notif-dropdown" id="notifDropdown">
+            <div class="notif-head">Notifications</div>
+            <div class="notif-list" id="notifList"><div class="notif-empty">No notifications yet.</div></div>
+          </div>
+        </div>
+        <div class="profile-wrap">
+          <button class="profile-btn" id="profileBtn">
+            <span class="profile-avatar" id="topbarAvatar">S</span>
+            <span id="topbarName">Seller</span>
+          </button>
+          <div class="profile-dropdown" id="profileDropdown">
+            <button onclick="showTab('profile'); closeDropdown();">👤 My profile</button>
+            <button onclick="showTab('gigs'); closeDropdown();">🗂️ My gigs</button>
+            <hr>
+            <button class="logout-opt" onclick="logout();">↪ Log out</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="app-main">
+    <div class="chips" style="margin-bottom:26px;">
+      <button class="chip active" id="tabChip-orders" onclick="showTab('orders')">Orders<span class="tab-badge" id="ordersBadge"></span></button>
+      <button class="chip" id="tabChip-messages" onclick="showTab('messages')">Messages</button>
+      <button class="chip" id="tabChip-gigs" onclick="showTab('gigs')">My gigs</button>
+      <button class="chip" id="tabChip-profile" onclick="showTab('profile')">Profile</button>
+    </div>
+
+    <!-- ================= ORDERS ================= -->
+    <div class="admin-tab active" id="tab-orders">
+      <div class="section-title">
+        <div>
+          <span class="kicker">Your orders</span>
+          <h2 style="font-size:26px;">Orders</h2>
+        </div>
+      </div>
+      <div class="info-note">Orders appear here <b>after Gignary has verified the buyer's payment</b>. Accept the order, do the work, send the final file in <b>Messages</b>, then mark it <b>Delivered</b>. The buyer sees every step you set.</div>
+      <div class="summary-row" id="ordersSummary"></div>
+      <div id="ordersList"><p class="muted">Loading…</p></div>
+    </div>
+
+    <!-- ================= MESSAGES ================= -->
+    <div class="admin-tab" id="tab-messages">
+      <div class="section-title">
+        <div>
+          <span class="kicker">Conversation</span>
+          <h2 style="font-size:26px;">Messages</h2>
+        </div>
+      </div>
+      <div class="info-note">All talk with buyers happens here. <b>Phone numbers, emails and social links cannot be shared</b>, they are blocked automatically. Send finished work as a PDF with the 📎 button.</div>
+      <div class="admin-messages-layout">
+        <div class="admin-thread-list" id="threadList"><p class="muted" style="padding:14px;">Loading…</p></div>
+        <div class="admin-thread-panel" id="threadPanel"><p class="muted">Select a conversation on the left to read and reply.</p></div>
+      </div>
+    </div>
+
+    <!-- ================= GIGS ================= -->
+    <div class="admin-tab" id="tab-gigs">
+      <div class="section-title">
+        <div>
+          <span class="kicker">Your portfolio</span>
+          <h2 style="font-size:26px;">My gigs</h2>
+        </div>
+        <button class="btn btn-primary btn-sm" onclick="openGigModal()">+ New gig</button>
+      </div>
+      <div class="gig-grid" id="gigsGrid"><p class="muted">Loading…</p></div>
+    </div>
+
+    <!-- ================= PROFILE ================= -->
+    <div class="admin-tab" id="tab-profile">
+      <span class="kicker">Your account</span>
+      <h2 style="font-size:26px; margin-bottom:22px;">Profile</h2>
+      <div class="profile-grid">
+        <div class="profile-card" style="margin-bottom:0;">
+          <div class="avatar-upload-wrap">
+            <div class="profile-avatar-lg" id="profileAvatarLg">S</div>
+            <label class="avatar-edit-btn" for="avatarFileInput" title="Change photo">📷</label>
+            <input type="file" id="avatarFileInput" accept="image/*" style="display:none;">
+          </div>
+          <span class="buyer-tag" style="margin-top:0;">Seller</span>
+          <div class="field"><label for="pfName">Name</label><input type="text" id="pfName" readonly><small class="muted" style="font-size:12px;">Your name is set by Gignary. Write to the team if it needs to change.</small></div>
+          <div class="field"><label for="pfEmail">Login email</label><input type="text" id="pfEmail" readonly></div>
+          <div class="field"><label for="pfBio">Bio</label><textarea id="pfBio" maxlength="600" placeholder="Tell buyers who you are and what you do best."></textarea></div>
+          <div class="field"><label for="pfSkills">Skills (comma separated)</label><input type="text" id="pfSkills" maxlength="200" placeholder="e.g. Logo design, Branding"></div>
+          <div class="field"><label for="pfLanguage">Language</label><input type="text" id="pfLanguage" maxlength="100" placeholder="e.g. English, Urdu"></div>
+          <button class="btn btn-primary btn-sm" id="pfSaveBtn" onclick="saveProfile()">Save changes</button>
+        </div>
+
+        <div class="seller-stats-row" id="pfStats" style="margin-top:0;"></div>
+
+        <div class="profile-card" style="margin-bottom:0;">
+          <h3 style="font-size:17px; margin-bottom:6px;">Change password</h3>
+          <p class="muted" style="margin:0 0 16px;">Please set your own password the first time you log in.</p>
+          <form id="pwForm">
+            <div class="field"><label for="pwNew">New password</label><input type="password" id="pwNew" minlength="8" required autocomplete="new-password" placeholder="At least 8 characters"></div>
+            <div class="field"><label for="pwNew2">Confirm new password</label><input type="password" id="pwNew2" minlength="8" required autocomplete="new-password"></div>
+            <button type="submit" class="btn btn-primary btn-sm">Update password</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<!-- ================= GIG MODAL (add + edit) ================= -->
+<div class="modal-backdrop" id="gigModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('gigModalBackdrop')">&times;</button>
+    <h3 style="font-size:20px; margin-bottom:4px;" id="gigModalTitle">New gig</h3>
+    <p style="font-size:13px; color:var(--sage); margin:0 0 18px;">Phone numbers, emails and links are not allowed in a gig.</p>
+    <form id="gigForm">
+      <div class="field"><label for="gTitle">Gig title</label><input type="text" id="gTitle" maxlength="120" required></div>
+      <div class="field"><label for="gCat">Category</label>
+        <select id="gCat">
+          <option value="Design">Design</option>
+          <option value="Writing">Writing</option>
+          <option value="Marketing">Marketing</option>
+          <option value="Development">Development</option>
+          <option value="Video Editor">Video Editor</option>
+          <option value="UI/UX Designer">UI/UX Designer</option>
+          <option value="Banner">Banner</option>
+          <option value="Thumbnail">Thumbnail</option>
+          <option value="Logo">Logo</option>
+        </select>
+      </div>
+      <div class="field"><label for="gPrice">Starting price (PKR) — minimum 100</label><input type="number" id="gPrice" min="100" step="1" required placeholder="e.g. 2000"></div>
+      <div class="field"><label for="gDesc">Description</label><textarea id="gDesc" maxlength="3000" required placeholder="What exactly does the buyer get?"></textarea></div>
+      <div class="field"><label for="gTags">Tags (comma separated, max 5)</label><input type="text" id="gTags" placeholder="e.g. logo, minimal, branding"></div>
+
+      <label class="file-drop" id="gMediaLabel">
+        <input type="file" id="gMedia" accept="image/*,video/*">
+        <p id="gMediaText">📎 Click to upload gig photo or video</p>
+      </label>
+      <div class="file-preview" id="gMediaPreview"></div>
+      <div class="field" id="gCoverField" style="display:none;">
+        <label for="gCover">Video cover photo (optional)</label>
+        <input type="file" id="gCover" accept="image/*">
+      </div>
+      <button type="submit" class="btn btn-primary btn-block" id="gigSubmitBtn" style="margin-top:16px;">Publish gig</button>
+    </form>
+  </div>
+</div>
+
+<!-- ================= PHOTO CROP MODAL ================= -->
+<div class="modal-backdrop" id="cropModalBackdrop">
+  <div class="modal">
+    <button class="modal-close" onclick="cancelCrop()">&times;</button>
+    <h3 style="font-size:19px; margin-bottom:4px;">Adjust photo</h3>
+    <p style="font-size:13px; color:var(--sage); margin:0 0 16px;">Drag to reposition, use the slider to zoom.</p>
+    <div class="crop-canvas-wrap"><canvas id="cropCanvas" width="320" height="320"></canvas></div>
+    <input type="range" id="cropZoomSlider" min="0.1" max="3" step="0.01" value="1" style="width:100%; margin:16px 0;">
+    <div style="display:flex; gap:10px;">
+      <button class="btn btn-ghost btn-block" onclick="cancelCrop()">Cancel</button>
+      <button class="btn btn-primary btn-block" onclick="saveCrop()">Use this photo</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<script src="shared.js"></script>
+<script>
+/* ================= STATE + HELPERS ================= */
+const STAGES = ["Received","Reviewed","In progress","Delivered"];
+let me = null;          // { id, name, email }
+let profile = null;     // row from profiles
+let orders = [];
+let ordersLoaded = false;
+let myGigs = [];
+let gigsLoaded = false;
+let activeTab = 'orders';
+let openThread = null;  // { postId, buyerId, title, buyerName }
+let chatPoll = null;
+let editingGigId = null;
+
+const $ = id => document.getElementById(id);
+const esc = v => String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const STORAGE_PREFIX = () => SUPABASE_URL + '/storage/v1/object/public/gig-media/';
+
+function fmtTime(iso){
+  if(!iso) return '';
+  const d = new Date(iso);
+  if(isNaN(d)) return '';
+  const today = new Date();
+  return d.toDateString() === today.toDateString()
+    ? d.toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })
+    : d.toLocaleDateString([], { day:'numeric', month:'short' });
+}
+function emptyBox(title, text){ return `<div class="empty-box"><h4>${esc(title)}</h4><p class="muted" style="margin:0;">${esc(text)}</p></div>`; }
+
+/* Same rules the database enforces, so the seller gets a friendly message before sending. */
+function hasContactInfo(t){
+  const s = String(t == null ? '' : t)
+    .replace(/[٠-٩]/g, d => d.charCodeAt(0) - 0x0660)
+    .replace(/[۰-۹]/g, d => d.charCodeAt(0) - 0x06F0);
+  if(/(\d[\s().*+\/_-]*){8,}/.test(s)) return true;
+  if(/((zero|one|two|three|four|five|six|seven|eight|nine|sifar|teen|panch|saat|aath)[\s,.-]*){7,}/i.test(s)) return true;
+  if(/[a-z0-9._%+-]+\s*(@|\[at\]|\(at\))\s*[a-z0-9-]+/i.test(s)) return true;
+  if(/(^|\s)@[a-z0-9._]{3,}/i.test(s)) return true;
+  if(/(whats\s*app|whatsap|watsap|wa\.me|telegram|t\.me|skype|snapchat|discord|instagram|facebook|gmail|yahoo|hotmail|outlook|https?:|www\.|\.com|\.pk|\.net)/i.test(s)) return true;
+  return false;
+}
+const CONTACT_MSG = 'Phone numbers, emails and social links cannot be shared. Please keep all communication in Conversation.';
+
+/* Chat text is stored as HTML by the buyer side. Only a PDF link to our own storage is shown as a link; everything else is plain text. */
+function renderMsgText(text){
+  const t = String(text == null ? '' : text);
+  const m = t.match(/^📎 <a href="([^"]+)" target="_blank" rel="noopener">([^<]+)<\/a>$/);
+  if(m && m[1].indexOf(STORAGE_PREFIX()) === 0 && !/["'<>\s]/.test(m[1])){
+    return '📎 <a href="' + esc(m[1]) + '" target="_blank" rel="noopener">' + esc(m[2]) + '</a>';
+  }
+  return esc(t);
+}
+function previewText(text){
+  const t = String(text == null ? '' : text);
+  return /^📎 <a /.test(t) ? '📎 PDF file' : t.replace(/<[^>]*>/g, '').slice(0, 40);
+}
+
+/* ================= TABS ================= */
+function showTab(name){
+  activeTab = name;
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.chips .chip').forEach(c => c.classList.remove('active'));
+  $('tab-' + name).classList.add('active');
+  $('tabChip-' + name).classList.add('active');
+  if(name !== 'messages'){ clearInterval(chatPoll); chatPoll = null; }
+  if(name === 'orders') loadOrders();
+  if(name === 'messages') loadThreads();
+  if(name === 'gigs') loadMyGigs();
+  if(name === 'profile') loadProfileTab();
+  window.scrollTo({ top: 0 });
+}
+
+const profileBtn = $('profileBtn'), profileDropdown = $('profileDropdown');
+profileBtn.addEventListener('click', e => { e.stopPropagation(); profileDropdown.classList.toggle('show'); });
+document.addEventListener('click', () => profileDropdown.classList.remove('show'));
+function closeDropdown(){ profileDropdown.classList.remove('show'); }
+function closeModal(id){ $(id).classList.remove('show'); }
+function logout(){ sbSignOut(); clearSession(); location.href = 'index.html'; }
+
+function renderAvatars(){
+  const initial = (profile.name || me.name || 'S').charAt(0).toUpperCase();
+  const html = profile.avatar_url ? `<img src="${esc(profile.avatar_url)}" alt="${esc(initial)}">` : esc(initial);
+  $('topbarAvatar').innerHTML = html;
+  $('profileAvatarLg').innerHTML = html;
+  $('topbarName').textContent = profile.name || me.name;
+}
+
+/* ================= ORDERS ================= */
+async function fetchOrders(){
+  const { data, error } = await sbRpc('seller_orders');
+  if(error) return error;
+  orders = Array.isArray(data) ? data : [];
+  ordersLoaded = true;
+  const fresh = orders.filter(o => (o.stage_index || 0) === 0).length;
+  const badge = $('ordersBadge');
+  badge.textContent = fresh;
+  badge.style.display = fresh ? 'inline-block' : 'none';
+  return null;
+}
+
+function stageTrack(stage){
+  return STAGES.map((s, i) => {
+    const line = i < STAGES.length - 1 ? `<span class="order-stage-line ${i < stage ? 'done' : ''}"></span>` : '';
+    return `<span class="order-stage-step ${i <= stage ? 'done' : ''}">${s}</span>${line}`;
+  }).join('');
+}
+
+async function loadOrders(){
+  const el = $('ordersList');
+  const err = await fetchOrders();
+  if(err){ el.innerHTML = `<p class="muted">Could not load orders: ${esc(errMsg(err))}</p>`; return; }
+
+  const counts = [0,0,0,0];
+  orders.forEach(o => counts[Math.min(3, o.stage_index || 0)]++);
+  $('ordersSummary').innerHTML =
+    `<div class="stat-box"><b>${counts[0]}</b><span>New</span></div>` +
+    `<div class="stat-box"><b>${counts[1] + counts[2]}</b><span>Active</span></div>` +
+    `<div class="stat-box"><b>${counts[3]}</b><span>Delivered</span></div>`;
+
+  if(!orders.length){
+    el.innerHTML = emptyBox('No orders yet', 'When a buyer orders one of your gigs and Gignary verifies the payment, it shows up here.');
+    return;
+  }
+  const sorted = [...orders].sort((a, b) => ((a.stage_index || 0) === 3) - ((b.stage_index || 0) === 3));
+  el.innerHTML = sorted.map(o => {
+    const stage = o.stage_index || 0;
+    let action = '';
+    if(stage === 0) action = `<button class="btn btn-primary btn-sm" onclick="advanceOrder('${esc(o.id)}', 1)">✓ Accept order</button>`;
+    else if(stage === 1) action = `<button class="btn btn-primary btn-sm" onclick="advanceOrder('${esc(o.id)}', 2)">▶ Start work</button>`;
+    else if(stage === 2) action = `<button class="btn btn-primary btn-sm" onclick="advanceOrder('${esc(o.id)}', 3)">📦 Mark delivered</button>`;
+    const hint = stage === 2 ? `<p class="muted" style="font-size:12.5px; margin:10px 0 0;">Send the final file to the buyer in Messages first, then mark it delivered.</p>` : '';
+    const budget = /[a-z]/i.test(String(o.budget)) ? o.budget : 'PKR ' + o.budget;
+    return `
+    <div class="admin-card ${stage === 0 ? 'order-card-new' : ''} ${stage === 3 ? 'order-card-done' : ''}">
+      <div class="admin-card-top">
+        <div>
+          <h4>${esc(o.gig_title || 'Custom project')}</h4>
+          <div class="admin-meta">
+            <span><b>Order:</b> ${esc(o.order_code)}</span>
+            <span><b>Buyer:</b> ${esc(o.buyer_name)}</span>
+            <span><b>Budget:</b> ${esc(budget)}</span>
+            ${o.deadline ? `<span><b>Needed by:</b> ${esc(o.deadline)}</span>` : ''}
+            <span>${esc(fmtTime(o.created_at))}</span>
+          </div>
+        </div>
+        <span class="state-pill ${stage === 0 ? 'new' : ''}">${stage === 0 ? 'New order' : STAGES[stage]}</span>
+      </div>
+      ${o.details ? `<p style="margin-top:10px; white-space:pre-wrap;">${esc(o.details)}</p>` : ''}
+      <div class="order-stage-track">${stageTrack(stage)}</div>
+      <div class="admin-order-actions">
+        ${action}
+        <button class="btn btn-ghost btn-sm" onclick="chatForOrder('${esc(o.id)}')">💬 Message buyer</button>
+      </div>
+      ${hint}
+    </div>`;
+  }).join('');
+}
+
+async function advanceOrder(id, stage){
+  if(stage === 3 && !confirm('Mark this order as Delivered? Make sure the final work has been sent to the buyer in Messages.')) return;
+  const { error } = await sbRpc('seller_set_stage', { p_order_id: String(id), p_stage: stage });
+  if(error){ showToast(errMsg(error), true); return; }
+  showToast(stage === 1 ? 'Order accepted.' : stage === 2 ? 'Marked as In progress.' : 'Marked as Delivered. The buyer has been notified.');
+  loadOrders();
+}
+
+function chatForOrder(orderId){
+  const o = orders.find(x => String(x.id) === String(orderId));
+  if(!o) return;
+  showTab('messages');
+  // wait for the thread list to be built, then open this buyer's thread
+  const wait = setInterval(() => {
+    if(!threadsReady) return;
+    clearInterval(wait);
+    selectThread(o.post_id, o.buyer_id);
+  }, 120);
+  setTimeout(() => clearInterval(wait), 6000);
+}
+
+/* ================= MESSAGES ================= */
+let threadsReady = false;
+let threadMap = {};
+
+async function loadThreads(){
+  threadsReady = false;
+  const listEl = $('threadList');
+  if(!gigsLoaded) await fetchGigs();
+  if(!ordersLoaded) await fetchOrders();
+
+  let msgs = [];
+  const ids = myGigs.map(g => g.id);
+  if(ids.length){
+    const { data, error } = await sbSelect('messages', 'post_id=in.(' + ids.join(',') + ')&select=post_id,buyer_id,sender_id,sender_name,text,created_at&order=created_at.desc&limit=1000');
+    if(error){ listEl.innerHTML = `<p class="muted" style="padding:14px;">Could not load messages: ${esc(errMsg(error))}</p>`; return; }
+    msgs = data || [];
+  }
+
+  threadMap = {};
+  msgs.forEach(m => {
+    const buyerId = m.buyer_id || m.sender_id;
+    const key = m.post_id + '|' + buyerId;
+    if(!threadMap[key]) threadMap[key] = { postId: m.post_id, buyerId, msgs: [], buyerName: null };
+    threadMap[key].msgs.push(m);
+    if(m.sender_id === buyerId && m.sender_name) threadMap[key].buyerName = m.sender_name;
+  });
+  orders.forEach(o => {
+    if(!o.post_id || !o.buyer_id) return;
+    const key = o.post_id + '|' + o.buyer_id;
+    if(!threadMap[key]) threadMap[key] = { postId: o.post_id, buyerId: o.buyer_id, msgs: [], buyerName: null };
+    if(!threadMap[key].buyerName) threadMap[key].buyerName = o.buyer_name;
+  });
+
+  const threads = Object.values(threadMap).sort((a, b) => {
+    const ta = a.msgs[0] ? new Date(a.msgs[0].created_at).getTime() : 0;
+    const tb = b.msgs[0] ? new Date(b.msgs[0].created_at).getTime() : 0;
+    return tb - ta;
+  });
+
+  if(!threads.length){
+    listEl.innerHTML = '<p class="muted" style="padding:14px;">No conversations yet. Buyers who message your gigs appear here.</p>';
+  } else {
+    listEl.innerHTML = threads.map(t => {
+      const g = myGigs.find(x => String(x.id) === String(t.postId));
+      const last = t.msgs[0];
+      const active = openThread && String(openThread.postId) === String(t.postId) && String(openThread.buyerId) === String(t.buyerId);
+      return `<div class="admin-thread-item ${active ? 'active' : ''}" data-key="${esc(t.postId)}|${esc(t.buyerId)}" onclick="selectThread('${esc(t.postId)}','${esc(t.buyerId)}')">
+        <b>${esc(t.buyerName || 'Buyer')} · ${esc(g ? g.title : 'Gig')}${last ? `<span class="thread-time">${esc(fmtTime(last.created_at))}</span>` : ''}</b>
+        <span>${last ? esc((last.sender_id === me.id ? 'You: ' : '') + previewText(last.text)) : 'No messages yet'}</span>
+      </div>`;
+    }).join('');
+  }
+  threadsReady = true;
+}
+
+function selectThread(postId, buyerId){
+  const t = threadMap[postId + '|' + buyerId] || { postId, buyerId, buyerName: null };
+  const g = myGigs.find(x => String(x.id) === String(postId));
+  openThread = { postId, buyerId, title: g ? g.title : 'Gig', buyerName: t.buyerName || 'Buyer' };
+  document.querySelectorAll('.admin-thread-item').forEach(i => i.classList.toggle('active', i.dataset.key === (postId + '|' + buyerId)));
+
+  $('threadPanel').innerHTML = `
+    <h3 style="font-size:16px; margin-bottom:2px;">${esc(openThread.buyerName)} · ${esc(openThread.title)}</h3>
+    <p class="muted" style="font-size:12.5px; margin:0 0 14px;">Replying as <b>${esc(profile.name || me.name)}</b></p>
+    <div class="chat-thread" id="sellerChatThread" style="max-height:340px;"></div>
+    <div class="chat-input-row">
+      <input type="file" id="sellerPdfInput" accept="application/pdf" style="display:none;">
+      <button class="btn btn-ghost btn-sm" id="sellerPdfBtn" type="button" title="Attach a PDF">📎 PDF</button>
+      <input type="text" id="sellerChatInput" maxlength="2000" placeholder="Type a reply…">
+      <button class="btn btn-primary btn-sm" id="sellerChatSend">Send</button>
+    </div>
+    <p class="chat-rules">Do not share phone numbers, emails or social links. Keep everything inside Gignary.</p>`;
+
+  $('sellerChatSend').addEventListener('click', sendSellerMessage);
+  $('sellerChatInput').addEventListener('keydown', e => { if(e.key === 'Enter'){ e.preventDefault(); sendSellerMessage(); } });
+  $('sellerPdfBtn').addEventListener('click', () => $('sellerPdfInput').click());
+  $('sellerPdfInput').addEventListener('change', sendSellerPdf);
+
+  refreshThread(true);
+  clearInterval(chatPoll);
+  chatPoll = setInterval(() => refreshThread(false), 4000);
+}
+
+async function refreshThread(forceScroll){
+  if(!openThread) return;
+  const box = $('sellerChatThread');
+  if(!box){ clearInterval(chatPoll); return; }
+  const { data, error } = await sbSelect('messages', 'post_id=eq.' + openThread.postId + '&buyer_id=eq.' + openThread.buyerId + '&select=sender_id,sender_name,text,created_at&order=created_at.asc');
+  if(error){ box.innerHTML = '<p class="muted">Could not load this conversation.</p>'; return; }
+  const nearBottom = box.scrollTop + box.clientHeight >= box.scrollHeight - 20;
+  box.innerHTML = (data && data.length)
+    ? data.map(m => {
+        const mine = m.sender_id === me.id;
+        return `<div class="chat-msg ${mine ? 'buyer' : 'other'}">${mine ? '' : '<b>' + esc(m.sender_name || 'Buyer') + ':</b> '}${renderMsgText(m.text)}</div>`;
+      }).join('')
+    : '<div class="chat-msg system">No messages yet. Say hello to the buyer.</div>';
+  if(forceScroll || nearBottom) box.scrollTop = box.scrollHeight;
+}
+
+async function insertSellerMessage(text){
+  return sbInsert('messages', {
+    post_id: openThread.postId,
+    buyer_id: openThread.buyerId,
+    sender_id: me.id,
+    sender_name: profile.name || me.name,
+    text
+  });
+}
+
+async function sendSellerMessage(){
+  const input = $('sellerChatInput');
+  const text = input.value.trim();
+  if(!text || !openThread) return;
+  if(/[<>]/.test(text)){ showToast('The characters < and > are not allowed in messages.', true); return; }
+  if(hasContactInfo(text)){ showToast(CONTACT_MSG, true); return; }
+  input.value = '';
+  const { error } = await insertSellerMessage(text);
+  if(error){ input.value = text; showToast(errMsg(error), true); return; }
+  refreshThread(true);
+}
+
+async function sendSellerPdf(e){
+  const file = e.target.files[0];
+  e.target.value = '';
+  if(!file || !openThread) return;
+  if(file.type !== 'application/pdf'){ showToast('Please choose a PDF file.', true); return; }
+  if(file.size > 25 * 1024 * 1024){ showToast('PDF must be under 25 MB.', true); return; }
+  const safeName = file.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+  if(hasContactInfo(safeName)){ showToast('Please rename the file. It looks like it contains contact details.', true); return; }
+
+  const btn = $('sellerPdfBtn');
+  const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Uploading…';
+  const filePath = me.id + '/chat/' + Date.now() + '-' + safeName;
+  const { error: upErr } = await sbUpload(filePath, file);
+  if(upErr){ btn.disabled = false; btn.textContent = label; showToast('Could not upload PDF: ' + errMsg(upErr), true); return; }
+
+  const url = sbPublicUrl(filePath);
+  const text = `📎 <a href="${url}" target="_blank" rel="noopener">${safeName}</a>`;
+  const { error } = await insertSellerMessage(text);
+  btn.disabled = false; btn.textContent = label;
+  if(error){ showToast(errMsg(error), true); return; }
+  showToast('PDF sent. Remember to mark the order as Delivered.');
+  refreshThread(true);
+}
+
+/* ================= GIGS ================= */
+async function fetchGigs(){
+  const { data, error } = await sbSelect('posts', 'seller_id=eq.' + me.id + '&select=*&order=created_at.desc');
+  if(error) return error;
+  myGigs = data || [];
+  gigsLoaded = true;
+  return null;
+}
+
+function gigMedia(g){
+  if(g.media_type === 'video'){
+    if(g.media_poster_url) return `<img src="${esc(g.media_poster_url)}" alt="">`;
+    if(g.media_url) return `<video src="${esc(g.media_url)}" muted playsinline preload="metadata"></video>`;
+  } else if(g.media_url){
+    return `<img src="${esc(g.media_url)}" alt="">`;
+  }
+  return `<svg class="media-icon" width="46" height="46" viewBox="0 0 24 24"><path d="M12 3l1.8 4.4L18 9l-4.2 1.6L12 15l-1.8-4.4L6 9l4.2-1.6L12 3z" stroke="currentColor" stroke-width="1.6" fill="none"/></svg>`;
+}
+
+async function loadMyGigs(){
+  const el = $('gigsGrid');
+  const err = await fetchGigs();
+  if(err){ el.innerHTML = `<p class="muted">Could not load your gigs: ${esc(errMsg(err))}</p>`; return; }
+  if(!myGigs.length){
+    el.style.display = 'block';
+    el.innerHTML = emptyBox('No gigs yet', 'Add your first gig. Buyers will see it on their dashboard right away.');
+    return;
+  }
+  el.style.display = '';
+  el.innerHTML = myGigs.map(g => `
+    <div class="gig-card">
+      <div class="gig-media"><span class="gig-cat-badge">${esc(g.category)}</span>${gigMedia(g)}</div>
+      <div class="gig-body">
+        <div class="gig-title-row"><h3>${esc(g.title)}</h3><span class="gig-rating">★ ${esc(g.rating || 'New')}</span></div>
+        <p class="gig-desc gig-desc-clamp">${esc(g.description)}</p>
+        <div class="gig-foot"><div class="gig-price"><b>${esc(g.price)}</b><span>starting price</span></div></div>
+      </div>
+      <div class="seller-gig-actions">
+        <button class="btn btn-ghost btn-sm" onclick="openGigModal('${esc(g.id)}')">✏️ Edit</button>
+        <button class="btn btn-danger btn-sm" onclick="deleteGig('${esc(g.id)}')">🗑️ Delete</button>
+      </div>
+    </div>`).join('');
+}
+
+let pendingMedia = null, pendingMediaType = null, pendingCover = null;
+
+function openGigModal(gigId){
+  editingGigId = gigId || null;
+  const g = gigId ? myGigs.find(x => String(x.id) === String(gigId)) : null;
+  $('gigForm').reset();
+  pendingMedia = null; pendingMediaType = null; pendingCover = null;
+  $('gMediaPreview').classList.remove('show'); $('gMediaPreview').innerHTML = '';
+  $('gCoverField').style.display = 'none';
+  $('gMediaText').textContent = '📎 Click to upload gig photo or video';
+  $('gigModalTitle').textContent = g ? 'Edit gig' : 'New gig';
+  $('gigSubmitBtn').textContent = g ? 'Save changes' : 'Publish gig';
+  if(g){
+    $('gTitle').value = g.title || '';
+    $('gCat').value = g.category || 'Design';
+    $('gPrice').value = parseInt(String(g.price || '').replace(/[^0-9]/g, ''), 10) || '';
+    $('gDesc').value = g.description || '';
+    $('gTags').value = g.tags || '';
+    if(g.media_url) $('gMediaText').textContent = '✓ Current file kept. Click to replace it.';
+  }
+  $('gigModalBackdrop').classList.add('show');
+}
+
+$('gMedia').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  pendingMedia = file;
+  pendingMediaType = file.type.startsWith('video') ? 'video' : 'image';
+  const url = URL.createObjectURL(file);
+  const pv = $('gMediaPreview');
+  pv.innerHTML = pendingMediaType === 'video' ? `<video src="${url}" controls muted></video>` : `<img src="${url}" alt="Preview">`;
+  pv.classList.add('show');
+  $('gMediaText').textContent = '✓ ' + file.name;
+  $('gCoverField').style.display = pendingMediaType === 'video' ? 'block' : 'none';
+});
+$('gCover').addEventListener('change', e => { pendingCover = e.target.files[0] || null; });
+
+$('gigForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const title = $('gTitle').value.trim();
+  const category = $('gCat').value;
+  const priceNum = parseInt($('gPrice').value, 10);
+  const description = $('gDesc').value.trim();
+  const tagList = $('gTags').value.split(',').map(t => t.trim()).filter(Boolean);
+
+  if(!priceNum || priceNum < 100){ showToast('Minimum price is PKR 100.', true); return; }
+  if(tagList.length > 5){ showToast('You can add up to 5 tags only.', true); return; }
+  if(/[<>]/.test(title + description + tagList.join(','))){ showToast('The characters < and > are not allowed.', true); return; }
+  if(hasContactInfo(title) || hasContactInfo(description) || hasContactInfo(tagList.join(', '))){
+    showToast('Contact details (phone, email, social links) cannot be added to a gig.', true); return;
+  }
+
+  const btn = $('gigSubmitBtn');
+  const label = btn.textContent;
+  btn.disabled = true; btn.textContent = 'Saving…';
+  const done = () => { btn.disabled = false; btn.textContent = label; };
+
+  let mediaUrl = null, mediaPoster = null;
+  if(pendingMedia){
+    const safe = pendingMedia.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+    const path = me.id + '/' + Date.now() + '-' + safe;
+    btn.textContent = 'Uploading…';
+    const { error: upErr } = await sbUpload(path, pendingMedia);
+    if(upErr){ done(); showToast('Could not upload file: ' + errMsg(upErr), true); return; }
+    mediaUrl = sbPublicUrl(path);
+    if(pendingMediaType === 'video' && pendingCover){
+      const cSafe = pendingCover.name.replace(/[^a-zA-Z0-9.\-_]/g, '_');
+      const cPath = me.id + '/cover/' + Date.now() + '-' + cSafe;
+      const { error: cErr } = await sbUpload(cPath, pendingCover);
+      if(!cErr) mediaPoster = sbPublicUrl(cPath);
+    }
+    btn.textContent = 'Saving…';
+  }
+
+  const fields = { title, category, price: 'PKR ' + priceNum.toLocaleString('en-US'), description, tags: tagList.join(', ') };
+  if(mediaUrl){ fields.media_url = mediaUrl; fields.media_type = pendingMediaType; fields.media_poster_url = mediaPoster; }
+
+  if(editingGigId){
+    const { data, error } = await sbUpdate('posts', editingGigId, fields);
+    done();
+    if(error){ showToast(errMsg(error), true); return; }
+    if(Array.isArray(data) && data.length === 0){ showToast('Could not save: this gig is not yours or no longer exists.', true); return; }
+    showToast('Gig updated.');
+  } else {
+    const { error } = await sbInsert('posts', Object.assign({
+      seller_id: me.id,
+      seller_name: profile.name,
+      seller_bio: profile.bio || null,
+      seller_skills: profile.skills || null,
+      seller_language: profile.language || null,
+      seller_avatar_url: profile.avatar_url || null,
+      rating: 'New'
+    }, fields));
+    done();
+    if(error){ showToast(errMsg(error), true); return; }
+    showToast('Gig published. Buyers can see it now.');
+  }
+  closeModal('gigModalBackdrop');
+  loadMyGigs();
+});
+
+async function deleteGig(id){
+  if(!confirm('Delete this gig? This cannot be undone.')) return;
+  const { error } = await sbDelete('posts', id);
+  if(error){ showToast('Could not delete: ' + errMsg(error), true); return; }
+  await loadMyGigs();
+  if(myGigs.some(g => String(g.id) === String(id))) showToast('This gig could not be deleted. It may have orders attached. Ask Gignary to remove it.', true);
+  else showToast('Gig deleted.');
+}
+
+/* ================= PROFILE ================= */
+async function loadProfileTab(){
+  $('pfName').value = profile.name || '';
+  $('pfEmail').value = me.email || '';
+  $('pfBio').value = profile.bio || '';
+  $('pfSkills').value = profile.skills || '';
+  $('pfLanguage').value = profile.language || '';
+  renderAvatars();
+
+  if(!gigsLoaded) await fetchGigs();
+  if(!ordersLoaded) await fetchOrders();
+  const delivered = orders.filter(o => (o.stage_index || 0) === 3).length;
+  $('pfStats').innerHTML =
+    `<div class="stat-box"><b>${myGigs.length}</b><span>Gigs</span></div>` +
+    `<div class="stat-box"><b>${delivered}</b><span>Delivered</span></div>` +
+    `<div class="stat-box"><b id="pfAvg">—</b><span>Avg rating</span></div>` +
+    `<div class="stat-box"><b id="pfReviews">0</b><span>Reviews</span></div>`;
+  sbSelect('ratings', 'seller_name=eq.' + encodeURIComponent(profile.name) + '&select=stars').then(({ data }) => {
+    if(data && data.length){
+      $('pfAvg').textContent = '★ ' + (data.reduce((s, r) => s + r.stars, 0) / data.length).toFixed(1);
+      $('pfReviews').textContent = data.length;
+    }
+  });
+}
+
+async function saveProfile(){
+  const bio = $('pfBio').value.trim(), skills = $('pfSkills').value.trim(), language = $('pfLanguage').value.trim();
+  if(/[<>]/.test(bio + skills + language)){ showToast('The characters < and > are not allowed.', true); return; }
+  if(hasContactInfo(bio) || hasContactInfo(skills) || hasContactInfo(language)){
+    showToast('Contact details (phone, email, social links) cannot be added to your profile.', true); return;
+  }
+  const btn = $('pfSaveBtn');
+  btn.disabled = true;
+  const { data, error } = await sbUpdate('profiles', me.id, { bio, skills, language });
+  btn.disabled = false;
+  if(error){ showToast(errMsg(error), true); return; }
+  if(Array.isArray(data) && data.length === 0){ showToast('Could not save your profile.', true); return; }
+  profile.bio = bio; profile.skills = skills; profile.language = language;
+  showToast('Profile updated. Your gigs show the new info.');
+}
+
+$('avatarFileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  openCropModal(file, async cropped => {
+    const path = me.id + '/avatar/' + Date.now() + '-dp.png';
+    showToast('Uploading photo…');
+    const { error: upErr } = await sbUpload(path, cropped);
+    if(upErr){ showToast('Could not upload photo: ' + errMsg(upErr), true); return; }
+    const url = sbPublicUrl(path);
+    const { data, error } = await sbUpdate('profiles', me.id, { avatar_url: url });
+    if(error){ showToast(errMsg(error), true); return; }
+    if(Array.isArray(data) && data.length === 0){ showToast('Could not save your photo.', true); return; }
+    profile.avatar_url = url;
+    renderAvatars();
+    showToast('Profile photo updated.');
+  });
+  e.target.value = '';
+});
+
+$('pwForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  const p1 = $('pwNew').value, p2 = $('pwNew2').value;
+  if(p1.length < 8){ showToast('Password must be at least 8 characters.', true); return; }
+  if(p1 !== p2){ showToast("Passwords don't match.", true); return; }
+  const btn = e.target.querySelector('button[type=submit]');
+  btn.disabled = true;
+  const { error } = await sbUpdateUser({ password: p1 });
+  btn.disabled = false;
+  if(error){ showToast('Could not update password: ' + errMsg(error), true); return; }
+  e.target.reset();
+  showToast('Password updated.');
+});
+
+/* ================= PHOTO CROP (same as dashboard) ================= */
+let cropCallback = null, cropImgObj = null;
+let cropOffsetX = 0, cropOffsetY = 0, cropScale = 1, cropMinScale = 1;
+let cropDragging = false, cropDragStartX = 0, cropDragStartY = 0, cropStartOffsetX = 0, cropStartOffsetY = 0;
+
+function openCropModal(file, callback){
+  if(!file) return;
+  cropCallback = callback;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    const img = new Image();
+    img.onload = () => {
+      cropImgObj = img;
+      const canvas = $('cropCanvas');
+      cropMinScale = Math.max(canvas.width / img.width, canvas.height / img.height);
+      cropScale = cropMinScale; cropOffsetX = 0; cropOffsetY = 0;
+      const slider = $('cropZoomSlider');
+      slider.min = cropMinScale; slider.max = cropMinScale * 4;
+      slider.step = (cropMinScale * 4 - cropMinScale) / 100 || 0.01;
+      slider.value = cropScale;
+      drawCropCanvas();
+      $('cropModalBackdrop').classList.add('show');
+    };
+    img.src = ev.target.result;
+  };
+  reader.readAsDataURL(file);
+}
+function drawCropCanvas(){
+  const canvas = $('cropCanvas'), ctx = canvas.getContext('2d');
+  ctx.fillStyle = '#111'; ctx.fillRect(0, 0, canvas.width, canvas.height);
+  if(!cropImgObj) return;
+  const w = cropImgObj.width * cropScale, h = cropImgObj.height * cropScale;
+  ctx.drawImage(cropImgObj, (canvas.width - w) / 2 + cropOffsetX, (canvas.height - h) / 2 + cropOffsetY, w, h);
+}
+const cropWrap = document.querySelector('.crop-canvas-wrap');
+function cropDown(x, y){ cropDragging = true; cropDragStartX = x; cropDragStartY = y; cropStartOffsetX = cropOffsetX; cropStartOffsetY = cropOffsetY; }
+function cropMove(x, y){
+  if(!cropDragging) return;
+  const canvas = $('cropCanvas'), ratio = canvas.width / canvas.getBoundingClientRect().width;
+  cropOffsetX = cropStartOffsetX + (x - cropDragStartX) * ratio;
+  cropOffsetY = cropStartOffsetY + (y - cropDragStartY) * ratio;
+  drawCropCanvas();
+}
+cropWrap.addEventListener('mousedown', e => cropDown(e.clientX, e.clientY));
+document.addEventListener('mousemove', e => cropMove(e.clientX, e.clientY));
+document.addEventListener('mouseup', () => cropDragging = false);
+cropWrap.addEventListener('touchstart', e => { const t = e.touches[0]; cropDown(t.clientX, t.clientY); }, { passive:true });
+document.addEventListener('touchmove', e => { if(cropDragging){ const t = e.touches[0]; cropMove(t.clientX, t.clientY); } }, { passive:true });
+document.addEventListener('touchend', () => cropDragging = false);
+$('cropZoomSlider').addEventListener('input', e => { cropScale = parseFloat(e.target.value); drawCropCanvas(); });
+function cancelCrop(){ closeModal('cropModalBackdrop'); cropCallback = null; cropImgObj = null; }
+function saveCrop(){
+  $('cropCanvas').toBlob(blob => {
+    const file = new File([blob], 'cropped-photo.png', { type:'image/png' });
+    const cb = cropCallback;
+    closeModal('cropModalBackdrop'); cropCallback = null; cropImgObj = null;
+    if(cb) cb(file);
+  }, 'image/png');
+}
+
+/* ================= NOTIFICATIONS ================= */
+let notifications = [];
+async function loadNotifications(){
+  const { data, error } = await sbSelect('notifications', 'user_id=eq.' + me.id + '&select=*&order=created_at.desc&limit=30');
+  if(error || !data) return;
+  const hadUnreadBefore = notifications.some(n => !n.read);
+  notifications = data;
+  const list = $('notifList'), dot = $('notifDot');
+  if(!notifications.length){
+    list.innerHTML = '<div class="notif-empty">No notifications yet.</div>';
+    dot.style.display = 'none';
+    return;
+  }
+  list.innerHTML = notifications.map(n => `<div class="notif-item">${esc(n.text)}<small>${esc(fmtTime(n.created_at))}</small></div>`).join('');
+  const unread = notifications.some(n => !n.read);
+  dot.style.display = unread ? 'block' : 'none';
+  if(unread && !hadUnreadBefore && ordersLoaded && activeTab === 'orders') loadOrders();
+}
+$('notifBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  $('notifDropdown').classList.toggle('show');
+  notifications.forEach(n => { if(!n.read && n.id){ sbUpdate('notifications', n.id, { read: true }); } n.read = true; });
+  $('notifDot').style.display = 'none';
+});
+document.addEventListener('click', () => $('notifDropdown').classList.remove('show'));
+
+/* ================= INIT ================= */
+(async function(){
+  const existing = loadSession();
+  if(!existing || !existing.user){ location.href = 'login.html'; return; }
+  me = existing.user;
+  await ensureValidSession();
+  if(!accessToken){ clearSession(); location.href = 'login.html'; return; }
+
+  const { data, error } = await sbSelect('profiles', 'id=eq.' + me.id + '&select=*');
+  if(error){ $('bootMsg').textContent = 'Could not load your account: ' + errMsg(error) + '. Please refresh the page.'; return; }
+  profile = data && data[0];
+  if(!profile || profile.role !== 'seller'){ location.href = 'dashboard.html'; return; }
+
+  $('bootMsg').remove();
+  $('view-app').hidden = false;
+  renderAvatars();
+  await loadOrders();
+  loadNotifications();
+  fetchGigs();
+  setInterval(ensureValidSession, 5 * 60 * 1000);
+  setInterval(() => { loadNotifications(); if(activeTab !== 'orders') fetchOrders(); }, 30000);
+})();
+</script>
+</body>
+</html>

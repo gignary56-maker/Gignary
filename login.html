@@ -60,12 +60,14 @@
         return;
       }
 
-      const { data: profileRows } = await sbSelect('profiles', 'id=eq.' + data.user.id + '&select=name,avatar_url');
+      let { data: profileRows, error: profileErr } = await sbSelect('profiles', 'id=eq.' + data.user.id + '&select=name,avatar_url,role');
+      if(profileErr){ ({ data: profileRows } = await sbSelect('profiles', 'id=eq.' + data.user.id + '&select=name,avatar_url')); }
       const profileName = profileRows && profileRows[0] && profileRows[0].name;
       const profileAvatar = profileRows && profileRows[0] && profileRows[0].avatar_url;
-      const user = { id: data.user.id, name: profileName || email.split('@')[0], email, avatarUrl: profileAvatar || null };
+      const role = (profileRows && profileRows[0] && profileRows[0].role) || 'buyer';
+      const user = { id: data.user.id, name: profileName || email.split('@')[0], email, avatarUrl: profileAvatar || null, role };
       saveSession(user, data.access_token, data.refresh_token, data.expires_in);
-      location.href = 'dashboard.html';
+      location.href = role === 'seller' ? 'seller.html' : 'dashboard.html';
     } catch(err){
       btn.disabled = false; btn.textContent = originalLabel;
       showToast('Connection error while logging in: ' + err.message, true);

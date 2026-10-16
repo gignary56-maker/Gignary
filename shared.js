@@ -234,6 +234,20 @@ async function sbDelete(table, id){
   }
 }
 
+/* Calls a Postgres function (RPC). Returns { data } or { error }. A function that returns nothing gives data = null. */
+async function sbRpc(fn, args){
+  try{
+    const res = await authFetchWithRefresh(SUPABASE_URL + '/rest/v1/rpc/' + fn, 'POST', { 'Content-Type':'application/json' }, JSON.stringify(args || {}));
+    const text = await res.text();
+    let json = null;
+    try{ json = text ? JSON.parse(text) : null; }catch(e){}
+    if(!res.ok) return { error: json || { message: 'Request failed (' + res.status + ')' } };
+    return { data: json };
+  } catch(err){
+    return { error: { message: err.message } };
+  }
+}
+
 /* ================= SESSION (kept in localStorage so login carries across pages) ================= */
 function saveSession(user, token, refreshTok, expiresIn){
   accessToken = token;
