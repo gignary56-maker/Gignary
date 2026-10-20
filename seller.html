@@ -63,6 +63,7 @@
             <span id="topbarName">Seller</span>
           </button>
           <div class="profile-dropdown" id="profileDropdown">
+            <button onclick="location.href='dashboard.html'">🛍️ Browse gigs</button>
             <button onclick="showTab('profile'); closeDropdown();">👤 My profile</button>
             <button onclick="showTab('gigs'); closeDropdown();">🗂️ My gigs</button>
             <hr>
@@ -75,6 +76,7 @@
 
   <main class="app-main">
     <div class="chips" style="margin-bottom:26px;">
+      <button class="chip" onclick="location.href='dashboard.html'">← Browse gigs</button>
       <button class="chip active" id="tabChip-orders" onclick="showTab('orders')">Orders<span class="tab-badge" id="ordersBadge"></span></button>
       <button class="chip" id="tabChip-messages" onclick="showTab('messages')">Messages</button>
       <button class="chip" id="tabChip-gigs" onclick="showTab('gigs')">My gigs</button>
@@ -869,6 +871,8 @@ document.addEventListener('click', () => $('notifDropdown').classList.remove('sh
   $('view-app').hidden = false;
   renderAvatars();
   await loadOrders();
+  const wanted = (location.hash || '').replace('#', '');
+  if(['messages','gigs','profile'].indexOf(wanted) !== -1) showTab(wanted);
   loadNotifications();
   fetchGigs();
   setInterval(ensureValidSession, 5 * 60 * 1000);

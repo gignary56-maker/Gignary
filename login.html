@@ -67,7 +67,7 @@
       const role = (profileRows && profileRows[0] && profileRows[0].role) || 'buyer';
       const user = { id: data.user.id, name: profileName || email.split('@')[0], email, avatarUrl: profileAvatar || null, role };
       saveSession(user, data.access_token, data.refresh_token, data.expires_in);
-      location.href = role === 'seller' ? 'seller.html' : 'dashboard.html';
+      location.href = 'dashboard.html';
     } catch(err){
       btn.disabled = false; btn.textContent = originalLabel;
       showToast('Connection error while logging in: ' + err.message, true);

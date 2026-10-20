@@ -46,6 +46,7 @@
             <button onclick="openReportUserModal(); closeDropdown();">🚩 Report</button>
             <button onclick="setSubView('orderstatus'); closeDropdown();">📦 Order status</button>
             <button onclick="setSubView('settings'); closeDropdown();">⚙️ Settings</button>
+            <button id="sellerMenuBtn" style="display:none;" onclick="location.href='seller.html'">🧰 Seller dashboard</button>
             <button id="adminMenuBtn" style="display:none;" onclick="setSubView('admin'); closeDropdown();">🛠️ Admin panel</button>
             <hr>
             <button class="logout-opt" onclick="logout();">↪ Log out</button>
@@ -56,6 +57,15 @@
   </header>
 
   <main class="app-main">
+
+    <!-- Seller tools (shown only to seller accounts) -->
+    <div id="sellerBar" style="display:none; align-items:center; gap:10px; flex-wrap:wrap; background:#fff; border:1px solid var(--line); border-radius:16px; padding:12px 16px; margin-bottom:22px;">
+      <span class="kicker" style="margin:0 6px 0 0;">Seller tools</span>
+      <a class="chip" style="text-decoration:none; color:inherit;" href="seller.html#orders">📦 Orders</a>
+      <a class="chip" style="text-decoration:none; color:inherit;" href="seller.html#messages">💬 Messages</a>
+      <a class="chip" style="text-decoration:none; color:inherit;" href="seller.html#gigs">🗂️ My gigs</a>
+      <a class="chip" style="text-decoration:none; color:inherit;" href="seller.html#profile">👤 Seller profile</a>
+    </div>
 
     <!-- ---- DASHBOARD SUBVIEW ---- -->
     <div class="sub-view active" id="sub-dashboard">
@@ -2589,9 +2599,12 @@ document.getElementById('feedbackSendBtn').addEventListener('click', async () =>
     location.href = 'login.html';
     return;
   }
-  // Seller accounts have their own dashboard.
+  // Sellers use this same dashboard and also get the Seller tools bar (orders, messages, gigs, profile).
   const { data: roleRows } = await sbSelect('profiles', 'id=eq.' + currentUser.id + '&select=role');
-  if(roleRows && roleRows[0] && roleRows[0].role === 'seller'){ location.href = 'seller.html'; return; }
+  if(roleRows && roleRows[0] && roleRows[0].role === 'seller'){
+    document.getElementById('sellerBar').style.display = 'flex';
+    document.getElementById('sellerMenuBtn').style.display = 'flex';
+  }
   enterApp();
   // Keep the session fresh for long-open tabs so it never silently expires mid-use.
   setInterval(ensureValidSession, 5 * 60 * 1000);
